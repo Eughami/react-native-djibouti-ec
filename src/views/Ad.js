@@ -1,4 +1,4 @@
-const { default: BaseView } = require('@components/BaseView')
+import BaseView from '@components/BaseView'
 
 function Ad() {
   return <BaseView />

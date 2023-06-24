@@ -14,6 +14,7 @@ module.exports = function (api) {
             '@constants': './src/constants',
             '@zustand': './src/zustand',
             '@assets': './assets',
+            '@navigation': './src/navigation',
           },
         },
       ],
