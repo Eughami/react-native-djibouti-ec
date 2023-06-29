@@ -55,6 +55,7 @@ function TopCategories() {
 }
 
 function HomePage() {
+  const { colors } = useTheme()
   const {
     isLoading,
     isFetching,
@@ -79,7 +80,7 @@ function HomePage() {
 
   const loading = isFetching || isLoading
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: colors.card }}>
       <Title text='Categories' />
       <TopCategories />
       <Title text='Latest Ads' />

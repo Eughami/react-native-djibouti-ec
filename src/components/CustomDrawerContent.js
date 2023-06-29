@@ -1,43 +1,45 @@
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { useState } from 'react';
-import { Image, LayoutAnimation, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import { ROUTES } from '@constants/routes';
-import IconButton from './IconButton';
-import LangModal from './LanguageModal';
-import { useStore } from '@zustand/store';
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
+import { useState } from 'react'
+import { Image, LayoutAnimation, StyleSheet, Text, View } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { useNavigation, useTheme } from '@react-navigation/native'
+import { ROUTES } from '@constants/routes'
+import IconButton from './IconButton'
+import LangModal from './LanguageModal'
+import { useStore } from '@zustand/store'
+import { CategoryEnum } from '@constants/categories'
 
 function CustomDrawerContent(props) {
-  const { colors: themeColors, dark } = useTheme();
-  const theme = useStore((state) => state.theme);
-  const swithTheme = useStore((state) => state.swithTheme);
-  const [showCar, setShowCar] = useState(false);
-  const [showEstate, setShowEstate] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const { colors: themeColors, dark } = useTheme()
+  const theme = useStore((state) => state.theme)
+  const swithTheme = useStore((state) => state.swithTheme)
+  const [showVehicles, setShowVehicles] = useState(false)
+  const [showEstate, setShowEstate] = useState(false)
+  const [showJobs, setShowJobs] = useState(false)
+  const [showHomeItems, setShowHomeItems] = useState(false)
+  const [showElectrocnis, setShowElectrocnis] = useState(false)
+  const [showLeisure, setShowLeisure] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
-  function toggleItem() {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setShowCar(!showCar);
-  }
-  function toggleEstate() {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setShowEstate(!showEstate);
+  function toggleItem(func, bool) {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    func(!bool)
   }
   function toggleModal() {
-    setShowModal(!showModal);
+    setShowModal(!showModal)
   }
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingTop: 30 }}>
       <DrawerContentScrollView {...props}>
         {/* <DrawerItemList {...props} /> */}
         <DrawerItem
-          label="Latest Ads"
-          // onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORIES)}
+          label='Latest Ads'
+          onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
         />
         <DrawerItem
-          label="Popular Ads"
-          // onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORIES)}
+          label='Popular Ads'
+          // TODO.make an endpoint that gives top 20||50 ads for last week||month
+          onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
         />
         <View style={styles.seperatorContainer}>
           <View
@@ -51,135 +53,370 @@ function CustomDrawerContent(props) {
         <DrawerItem
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
-              <Text style={[styles.accordTitle, { color }]}>
-                DropDown Header
-              </Text>
+              <Text style={[styles.accordTitle, { color }]}>Vehicles</Text>
               <Ionicons
-                name={showCar ? 'chevron-up' : 'chevron-down'}
+                name={showVehicles ? 'chevron-up' : 'chevron-down'}
                 size={20}
                 color={color}
               />
             </View>
           )}
-          onPress={toggleItem}
+          onPress={() => toggleItem(setShowVehicles, showVehicles)}
         />
-        {showCar && (
-          <View>
+        {showVehicles && (
+          <View
+            style={[
+              styles.collapsed,
+              {
+                backgroundColor: dark ? '#232323' : '#f0f0f0',
+              },
+            ]}
+          >
             <DrawerItem
-              label="Category"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
+              label={CategoryEnum.PartAndAccessory}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.PartAndAccessory}`,
+                  { category: CategoryEnum.PartAndAccessory },
+                )
+              }
             />
             <DrawerItem
-              label="Product"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_PRODUCT)}
+              label={CategoryEnum.Boat}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Boat}`,
+                  { category: CategoryEnum.Boat },
+                )
+              }
             />
             <DrawerItem
-              label="Categories"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORIES)}
+              label={CategoryEnum.Motorcycle}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Motorcycle}`,
+                  { category: CategoryEnum.Motorcycle },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.Car}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Car}`,
+                  { category: CategoryEnum.Car },
+                )
+              }
             />
           </View>
         )}
         <DrawerItem
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
-              <Text style={[styles.accordTitle, { color }]}>
-                DropDown Header 2
-              </Text>
+              <Text style={[styles.accordTitle, { color }]}>Real Estate</Text>
               <Ionicons
-                name={showCar ? 'chevron-up' : 'chevron-down'}
+                name={showEstate ? 'chevron-up' : 'chevron-down'}
                 size={20}
                 color={color}
               />
             </View>
           )}
-          onPress={toggleEstate}
+          onPress={() => toggleItem(setShowEstate, showEstate)}
         />
         {showEstate && (
-          <View>
+          <View
+            style={[
+              styles.collapsed,
+              {
+                backgroundColor: dark ? '#232323' : '#f0f0f0',
+              },
+            ]}
+          >
             <DrawerItem
-              label="Category"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
+              label={CategoryEnum.CommercialProperty}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.CommercialProperty}`,
+                  { category: CategoryEnum.CommercialProperty },
+                )
+              }
             />
             <DrawerItem
-              label="Product"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_PRODUCT)}
+              label={CategoryEnum.Land}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Land}`,
+                  { category: CategoryEnum.Land },
+                )
+              }
             />
             <DrawerItem
-              label="Categories"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORIES)}
+              label={CategoryEnum.HouseRent}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HouseRent}`,
+                  { category: CategoryEnum.HouseRent },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.HouseSale}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HouseSale}`,
+                  { category: CategoryEnum.HouseSale },
+                )
+              }
             />
           </View>
         )}
-        <DrawerItem
-          label="Popular Ads"
-          // onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORIES)}
-        />
-        <View style={styles.seperatorContainer}>
-          <View
-            style={[styles.seperator, { borderColor: themeColors.text }]}
-          ></View>
-          <Text style={styles.subtitle}>Categories</Text>
-        </View>
 
         <DrawerItem
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
               <Text style={[styles.accordTitle, { color }]}>
-                DropDown Header
+                Jobs & Services
               </Text>
               <Ionicons
-                name={showCar ? 'chevron-up' : 'chevron-down'}
+                name={showJobs ? 'chevron-up' : 'chevron-down'}
                 size={20}
                 color={color}
               />
             </View>
           )}
-          onPress={toggleItem}
+          onPress={() => toggleItem(setShowJobs, showJobs)}
         />
-        {showCar && (
-          <View>
+        {showJobs && (
+          <View
+            style={[
+              styles.collapsed,
+              {
+                backgroundColor: dark ? '#232323' : '#f0f0f0',
+              },
+            ]}
+          >
             <DrawerItem
-              label="Category"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
+              label={CategoryEnum.MachineAndEquipment}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.MachineAndEquipment}`,
+                  { category: CategoryEnum.MachineAndEquipment },
+                )
+              }
             />
             <DrawerItem
-              label="Product"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_PRODUCT)}
+              label={CategoryEnum.Service}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Service}`,
+                  { category: CategoryEnum.Service },
+                )
+              }
             />
             <DrawerItem
-              label="Categories"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORIES)}
+              label={CategoryEnum.Job}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Job}`,
+                  { category: CategoryEnum.Job },
+                )
+              }
             />
           </View>
         )}
+
         <DrawerItem
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
               <Text style={[styles.accordTitle, { color }]}>
-                DropDown Header 2
+                Home Appliance
               </Text>
               <Ionicons
-                name={showCar ? 'chevron-up' : 'chevron-down'}
+                name={showHomeItems ? 'chevron-up' : 'chevron-down'}
                 size={20}
                 color={color}
               />
             </View>
           )}
-          onPress={toggleEstate}
+          onPress={() => toggleItem(setShowHomeItems, showHomeItems)}
         />
-        {showEstate && (
-          <View>
+        {showHomeItems && (
+          <View
+            style={[
+              styles.collapsed,
+              {
+                backgroundColor: dark ? '#232323' : '#f0f0f0',
+              },
+            ]}
+          >
             <DrawerItem
-              label="Category"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
+              label={CategoryEnum.Accessory}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Accessory}`,
+                  { category: CategoryEnum.Accessory },
+                )
+              }
             />
             <DrawerItem
-              label="Product"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_PRODUCT)}
+              label={CategoryEnum.Clothe}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Clothe}`,
+                  { category: CategoryEnum.Clothe },
+                )
+              }
             />
             <DrawerItem
-              label="Categories"
-              onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORIES)}
+              label={CategoryEnum.AirConditioner}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.AirConditioner}`,
+                  { category: CategoryEnum.AirConditioner },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.HomeAppliance}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HomeAppliance}`,
+                  { category: CategoryEnum.HomeAppliance },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.HomeDecor}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HomeDecor}`,
+                  { category: CategoryEnum.HomeDecor },
+                )
+              }
+            />
+          </View>
+        )}
+
+        <DrawerItem
+          label={({ color, focused }) => (
+            <View style={styles.accordHeader}>
+              <Text style={[styles.accordTitle, { color }]}>Electronics</Text>
+              <Ionicons
+                name={showElectrocnis ? 'chevron-up' : 'chevron-down'}
+                size={20}
+                color={color}
+              />
+            </View>
+          )}
+          onPress={() => toggleItem(setShowElectrocnis, showElectrocnis)}
+        />
+        {showElectrocnis && (
+          <View
+            style={[
+              styles.collapsed,
+              {
+                backgroundColor: dark ? '#232323' : '#f0f0f0',
+              },
+            ]}
+          >
+            <DrawerItem
+              label={CategoryEnum.TV}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.TV}`,
+                  { category: CategoryEnum.TV },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.Mobile}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Mobile}`,
+                  { category: CategoryEnum.Mobile },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.Game}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Game}`,
+                  { category: CategoryEnum.Game },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.Computer}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Computer}`,
+                  { category: CategoryEnum.Computer },
+                )
+              }
+            />
+          </View>
+        )}
+
+        <DrawerItem
+          label={({ color, focused }) => (
+            <View style={styles.accordHeader}>
+              <Text style={[styles.accordTitle, { color }]}>
+                Leisure, Sports & Hobby
+              </Text>
+              <Ionicons
+                name={showLeisure ? 'chevron-up' : 'chevron-down'}
+                size={20}
+                color={color}
+              />
+            </View>
+          )}
+          onPress={() => toggleItem(setShowLeisure, showLeisure)}
+        />
+        {showLeisure && (
+          <View
+            style={[
+              styles.collapsed,
+              {
+                backgroundColor: dark ? '#232323' : '#f0f0f0',
+              },
+            ]}
+          >
+            <DrawerItem
+              label={CategoryEnum.Movie}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Movie}`,
+                  { category: CategoryEnum.Movie },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.Toy}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Toy}`,
+                  { category: CategoryEnum.Toy },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.Book}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Book}`,
+                  { category: CategoryEnum.Book },
+                )
+              }
+            />
+            <DrawerItem
+              label={CategoryEnum.Sport}
+              onPress={() =>
+                props.navigation.navigate(
+                  `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Sport}`,
+                  { category: CategoryEnum.Sport },
+                )
+              }
             />
           </View>
         )}
@@ -203,7 +440,7 @@ function CustomDrawerContent(props) {
             // props.navigation.toggleDrawer()
             // toggleModal()
 
-            swithTheme(theme === 'light' ? 'dark' : 'light');
+            swithTheme(theme === 'light' ? 'dark' : 'light')
           }}
         />
         <Image
@@ -213,10 +450,10 @@ function CustomDrawerContent(props) {
       </View>
       <LangModal modalVisible={showModal} toggleModal={toggleModal} />
     </View>
-  );
+  )
 }
 
-export default CustomDrawerContent;
+export default CustomDrawerContent
 
 const styles = StyleSheet.create({
   container: {
@@ -243,10 +480,9 @@ const styles = StyleSheet.create({
   },
   // TODO. do we actually need this ?
   subtitle: {
-    fontStyle: 'italic',
     width: '90%',
     marginVertical: 10,
-    fontSize: 12,
+    fontSize: 10,
   },
   bottomContainer: {
     position: 'absolute',
@@ -259,7 +495,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  collapsed: {
+    paddingLeft: 20,
+    // margin: 5,
+    // width: '80%',
+    backgroundColor: '#232323',
+    backgroundColor: '#f0f0f0',
+    // borderColor: 'white',
+    // borderWidth: 0.5,
+  },
   flagStlye: {
     borderRadius: 50,
   },
-});
+})

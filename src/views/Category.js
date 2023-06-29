@@ -36,16 +36,18 @@ function Category() {
   const handleEndReached = () => {
     if (hasMore) setPage(page + 1)
   }
+  const Headercom = () => (
+    <View style={styles.sortContainer}>
+      <IconButton
+        icon='filter-outline'
+        color={colors.text}
+        size={30}
+        onPress={() => console.log('Toggle the sort menu')}
+      />
+    </View>
+  )
   return (
     <View style={[styles.container, { backgroundColor: colors.card }]}>
-      <View style={styles.sortContainer}>
-        <IconButton
-          icon='filter-outline'
-          color={colors.text}
-          size={30}
-          onPress={() => console.log('Toggle the sort menu')}
-        />
-      </View>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         {page === 1 && loading ? (
           <Loader />
@@ -58,6 +60,7 @@ function Category() {
             ListFooterComponent={hasMore ? Loader : null}
             onEndReached={handleEndReached}
             onEndReachedThreshold={0.5}
+            ListHeaderComponent={Headercom}
             ListEmptyComponent={
               <View
                 style={{
