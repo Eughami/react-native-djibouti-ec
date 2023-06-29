@@ -1,3 +1,4 @@
+import { CategoryEnum } from '@constants/categories'
 import { ROUTES } from '@constants/routes'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Ad from '@views/Ad'
@@ -18,6 +19,13 @@ function HomeStack() {
       <Stack.Screen name={ROUTES.HOME_PRODUCT} component={Ad} />
       <Stack.Screen name={ROUTES.HOME_CATEGORY} component={Category} />
       <Stack.Screen name={ROUTES.HOME_CATEGORIES} component={Categories} />
+      {Object.keys(CategoryEnum).map((cat, i) => (
+        <Stack.Screen
+          name={`${ROUTES.HOME_CATEGORY}.${cat}`}
+          component={Category}
+          key={i}
+        />
+      ))}
     </Stack.Navigator>
   )
 }

@@ -8,6 +8,7 @@ import NewAd from '@views/NewAd'
 import MyAds from '@views/MyAds'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeStack from './HomeStack'
+import { handleRoutetitle } from '@constants/common'
 
 const BottomTab = createBottomTabNavigator()
 
@@ -18,7 +19,7 @@ function BottomNav() {
       screenOptions={({ route, navigation }) => ({
         headerStyle: { backgroundColor: COLORS.primary.color },
         headerTintColor: 'white',
-        headerTitle: routeName,
+        headerTitle: handleRoutetitle(routeName),
         tabBarActiveTintColor: COLORS.primary.light400,
         headerLeft: ({ tintColor }) => (
           <IconButton

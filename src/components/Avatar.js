@@ -30,7 +30,9 @@ function Avatar({ icon, title }) {
           name={icon}
           size={35}
           color='white'
-          onPress={() => navigate(ROUTES.HOME_CATEGORY)}
+          onPress={() =>
+            navigate(`${ROUTES.HOME_CATEGORY}.${title}`, { category: title })
+          }
         />
       </View>
       <Text
