@@ -37,8 +37,8 @@ function NewAd() {
   }, [images])
 
   const {
-    register,
-    setValue,
+    // register,
+    // setValue,
     handleSubmit,
     control,
     reset,
