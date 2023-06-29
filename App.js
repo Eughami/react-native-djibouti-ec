@@ -9,12 +9,15 @@ import { Appearance, Platform, UIManager } from 'react-native'
 import { useStore } from '@zustand/store'
 import { useEffect, useRef } from 'react'
 import DrawerNav from '@navigation/DrawerNav'
+import { QueryClient, QueryClientProvider } from 'react-query'
 // import { useEffect } from 'react'
 // import { useStore } from '@zustand/store'
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
+
+const queryClient = new QueryClient()
 
 export default function App() {
   // const theme = Appearance.getColorScheme()
@@ -37,7 +40,7 @@ export default function App() {
   const setRouteName = useStore((state) => state.setRouteName)
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <StatusBar style='auto' translucent={true} />
       <NavigationContainer
         theme={theme === 'dark' ? DarkTheme : DefaultTheme}
@@ -74,6 +77,6 @@ export default function App() {
       >
         <DrawerNav />
       </NavigationContainer>
-    </>
+    </QueryClientProvider>
   )
 }

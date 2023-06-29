@@ -77,7 +77,7 @@ function NewAd() {
 
     setModalVisible(true)
     axiosInstance({
-      url: '/api/v1/ads',
+      url: '/ads',
       method: 'POST',
       data: formData,
       headers: {

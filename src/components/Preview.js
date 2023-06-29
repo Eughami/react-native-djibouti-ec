@@ -1,5 +1,6 @@
+import { API_BASE_URL } from '@constants/api'
 import { ROUTES } from '@constants/routes'
-import { COLORS } from '@constants/style'
+import { COLORS, formatPrice } from '@constants/style'
 import { useNavigation } from '@react-navigation/native'
 import * as React from 'react'
 import {
@@ -11,11 +12,13 @@ import {
   useColorScheme,
 } from 'react-native'
 
-function Preview(props) {
+function Preview(item) {
   const navigation = useNavigation()
   const colorScheme = useColorScheme()
-  const { imageUrl, title } = props
+  const { imageUrl, title, price, isPremium, attachment } = item
 
+  console.log(item)
+  console.log(`${API_BASE_URL}/files/${attachment?.[0]?.path}`)
   return (
     <View style={styles.root}>
       <View style={[styles.container, styles[colorScheme]]}>
@@ -24,13 +27,27 @@ function Preview(props) {
             navigation.navigate(ROUTES.HOME_PRODUCT)
           }}
         >
-          <Image style={styles.image} source={{ uri: imageUrl }} />
-          <View style={styles.ribbon}>
-            <Text style={styles.ribbonText}> Premium </Text>
-          </View>
-          <View style={styles.price}>
-            <Text style={styles.priceText}>500,000 FDJ</Text>
-          </View>
+          {attachment?.[0]?.path ? (
+            <Image
+              style={styles.image}
+              source={{ uri: `${API_BASE_URL}/files/${attachment[0].path}` }}
+            />
+          ) : (
+            <Image
+              style={styles.image}
+              source={require('@assets/default.jpg')}
+            />
+          )}
+          {isPremium && (
+            <View style={styles.ribbon}>
+              <Text style={styles.ribbonText}> Premium </Text>
+            </View>
+          )}
+          {price && (
+            <View style={styles.price}>
+              <Text style={styles.priceText}>{formatPrice(price)} FDJ</Text>
+            </View>
+          )}
 
           <View style={styles.textContainer}>
             <Text numberOfLines={1} style={styles.text}>

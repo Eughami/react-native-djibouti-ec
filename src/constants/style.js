@@ -48,3 +48,5 @@ export function extractRgbComponents(rgbColor) {
   // Return the RGB component values as an object
   return { red, green, blue }
 }
+
+export const formatPrice = (p) => parseInt(p).toLocaleString('en-US') || p

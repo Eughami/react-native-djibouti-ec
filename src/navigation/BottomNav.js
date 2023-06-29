@@ -15,7 +15,6 @@ function BottomNav() {
   const routeName = useStore((state) => state.routeName)
   return (
     <BottomTab.Navigator
-      initialRouteName={ROUTES.NEW_AD}
       screenOptions={({ route, navigation }) => ({
         headerStyle: { backgroundColor: COLORS.primary.color },
         headerTintColor: 'white',

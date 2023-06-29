@@ -1,75 +1,131 @@
+import { useTheme } from '@react-navigation/native'
+import {
+  AppState,
+  Button,
+  Platform,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native'
 import Preview from '@components/Preview'
-import { useNavigation, useTheme } from '@react-navigation/native'
-import { useStore } from '@zustand/store'
+import Avatar from '@components/Avatar'
+import { HomeCategories } from '@constants/categories'
+import { useQuery } from 'react-query'
+import { homePageAds } from '@services/home'
+import Loader from '@components/Loader'
+import { COLORS } from '@constants/style'
+import { useRefreshOnFocus } from '@components/FocusRefetch'
 import { useEffect } from 'react'
-import { FlatList, StyleSheet, View, useWindowDimensions } from 'react-native'
 
-const Home = () => {
-  const colors = useTheme().colors
-  const bears = useStore((state) => state.bears)
-  const { width, height } = useWindowDimensions()
-  const navigation = useNavigation()
-  useEffect(() => {
-    navigation.setParams({ headerTitle: 'Home' }) // Update the header title
-  }, [])
-
-  // INFO. with > 500 is considered tablet for me
-  // when on the homepage/category/search show a list of 2 items instead of 1
-  console.log({ height, width })
-
-  function renderItem(itemData) {
-    // return <BaseAd imageUrl={itemData.item.imageUrl} />
-    return <Preview {...itemData.item} />
-  }
-
+function Title({ text }) {
+  const { colors } = useTheme()
   return (
-    <View style={[styles.container, { backgroundColor: colors.card }]}>
-      <FlatList
-        data={[
-          {
-            id: 1,
-            title: 'First Product title',
-            imageUrl:
-              'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aHVtYW58ZW58MHx8MHx8fDA%3D&w=1000&q=80',
-          },
-          {
-            id: 2,
-            title: 'Second Product title',
-            imageUrl:
-              'https://ik.imagekit.io/dahaboo/tr:w-325/upload/i/2023-06/voiture-toyota-highlander-annee-2017-xle-awd-r3j-192912.jpg',
-          },
-          {
-            id: 3,
-            title: 'Third Product title',
-            imageUrl:
-              'https://media.istockphoto.com/id/1146517111/photo/taj-mahal-mausoleum-in-agra.jpg?s=612x612&w=0&k=20&c=vcIjhwUrNyjoKbGbAQ5sOcEzDUgOfCsm9ySmJ8gNeRk=',
-          },
-          {
-            id: 4,
-            title: 'Fourth Product title',
-            imageUrl:
-              'https://imgd.aeplcdn.com/1056x594/n/cw/ec/44686/activa-6g-right-front-three-quarter.jpeg',
-          },
-          {
-            id: 5,
-            title: 'Fifth Product title',
-            imageUrl:
-              'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Ym9va3xlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80',
-          },
-        ]}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        // ItemSeparatorComponent={() => <View style={{ height: 0 }} />}
-        // numColumns={2}
-      />
+    <View style={{ margin: 20 }}>
+      <Text
+        style={{
+          color: colors.text,
+          fontSize: 18,
+          paddingLeft: 10,
+          fontWeight: 'bold',
+        }}
+      >
+        {text}
+      </Text>
     </View>
   )
 }
 
-export default Home
+function TopCategories() {
+  // TODO. remove this flatlist and make it  a fixed 6  items
+  return (
+    <View
+      style={{
+        // backgroundColor: 'lightgrey',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+      }}
+    >
+      {HomeCategories.map((item) => (
+        <Avatar icon={item.icon} title={item.name} key={item.name} />
+      ))}
+    </View>
+  )
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-})
+function HomePage() {
+  const {
+    isLoading,
+    isFetching,
+    data: ads,
+    refetch,
+  } = useQuery('home-page-ads', () => homePageAds(), {})
+
+  // TODO.Screen focus refetch worth it ??
+  // useRefreshOnFocus(refetch)
+
+  const onAppStateChange = (status) => {
+    if (Platform.OS !== 'web' && status === 'active') {
+      refetch()
+    }
+  }
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', onAppStateChange)
+
+    return () => subscription.remove()
+  }, [])
+
+  const loading = isFetching || isLoading
+  return (
+    <ScrollView>
+      <Title text='Categories' />
+      <TopCategories />
+      <Title text='Latest Ads' />
+      <HomeAds loading={loading} refetch={refetch} ads={ads} />
+    </ScrollView>
+  )
+}
+
+function HomeAds({ loading, ads, refetch }) {
+  console.log(loading, ads)
+  const { colors } = useTheme()
+  if (loading)
+    return (
+      <View style={{ minHeight: 200 }}>
+        <Loader />
+      </View>
+    )
+  return (
+    <>
+      {!ads || ads.data.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            height: 200,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{ color: colors.text, marginBottom: 10 }}>
+            Could not fetch any ads ...
+          </Text>
+          <Button
+            title='refetch'
+            color={COLORS.primary.color}
+            onPress={refetch}
+          />
+        </View>
+      ) : (
+        <>
+          {ads.data.map((item) => (
+            <Preview {...item} key={item.id} />
+          ))}
+        </>
+      )}
+    </>
+  )
+}
+
+export default HomePage
