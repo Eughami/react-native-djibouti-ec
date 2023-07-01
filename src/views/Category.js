@@ -1,49 +1,101 @@
 import IconButton from '@components/IconButton'
 import Loader from '@components/Loader'
 import Preview from '@components/Preview'
+import SelectedOption from '@components/SelectedOption'
+import SortOptionsModal from '@components/SortOptionModal'
+import { sortOptions } from '@constants/common'
+import { extractRgbComponents } from '@constants/style'
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native'
 import { adsPerCategory } from '@services/category'
 import { useStore } from '@zustand/store'
 import { useEffect, useState } from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import {
+  FlatList,
+  LayoutAnimation,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { useQuery } from 'react-query'
 
 function Category() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [hasMore, setHasMore] = useState(false)
   const [page, setPage] = useState(1)
   const [list, setList] = useState([])
+  const [sort, setSort] = useState('createdAt,DESC')
   const { name, params } = useRoute()
-  const { colors } = useTheme()
+  const { colors, dark } = useTheme()
   const navigation = useNavigation()
 
+  const { blue, green, red } = extractRgbComponents(
+    dark ? colors.border : colors.background,
+  )
   const {
     isLoading,
     isFetching,
     data: ads,
-    // refetch,
-  } = useQuery(`${name}-ads`, () => adsPerCategory(page, params?.category), {
-    notifyOnChangeProps: 'tracked',
-    onSuccess: (data) => setList((list) => [...list, ...data.data]),
-  })
+    refetch,
+  } = useQuery(
+    `${name}-ads`,
+    () => adsPerCategory(page, params?.category, sort),
+    {
+      onSuccess: (data) => {
+        setHasMore(page < data?.pageCount)
+        setList((list) => [...list, ...data.data])
+      },
+    },
+  )
+
+  const handleToggleDropdown = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setIsOpen(!isOpen)
+  }
+
+  const handleOptionSelect = (option) => {
+    setSort(option)
+    setIsOpen(false)
+  }
 
   useEffect(() => {
-    console.log('mounted ')
-    console.log('CurrentName', name)
-    console.log('Passed params', params)
-  }, [])
+    setList([])
+    if (page !== 1) {
+      setPage(1)
+    } else {
+      refetch()
+    }
+  }, [sort])
+
+  useEffect(() => {
+    refetch()
+  }, [page])
+
   const loading = isFetching || isLoading
-  const hasMore = page < ads?.page
 
   const handleEndReached = () => {
-    if (hasMore) setPage(page + 1)
+    if (hasMore) {
+      setPage(page + 1)
+    }
   }
   const Headercom = () => (
     <View style={styles.sortContainer}>
-      <IconButton
-        icon='filter-outline'
-        color={colors.text}
-        size={30}
-        onPress={() => console.log('Toggle the sort menu')}
-      />
+      <View
+        style={{
+          backgroundColor: `rgba(${red},${green},${blue},1)`,
+          borderRadius: 20,
+          padding: 2,
+        }}
+      >
+        <IconButton
+          icon='swap-vertical-outline'
+          color={colors.text}
+          size={20}
+          onPress={handleToggleDropdown}
+          text='Sort'
+        />
+      </View>
     </View>
   )
   return (
@@ -57,7 +109,7 @@ function Category() {
             data={list}
             renderItem={(itemData) => <Preview {...itemData.item} />}
             keyExtractor={(item) => item.id}
-            ListFooterComponent={hasMore ? Loader : null}
+            ListFooterComponent={hasMore || loading ? Loader : null}
             onEndReached={handleEndReached}
             onEndReachedThreshold={0.5}
             ListHeaderComponent={Headercom}
@@ -76,6 +128,12 @@ function Category() {
           />
         )}
       </View>
+      <SortOptionsModal
+        isOpen={isOpen}
+        toggleFunc={() => setIsOpen(!isOpen)}
+        currentSelection={sort}
+        handleSelection={handleOptionSelect}
+      />
     </View>
   )
 }

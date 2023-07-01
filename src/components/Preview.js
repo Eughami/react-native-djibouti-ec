@@ -15,10 +15,13 @@ import {
 function Preview(item) {
   const navigation = useNavigation()
   const colorScheme = useColorScheme()
-  const { imageUrl, title, price, isPremium, attachment } = item
+  const { title, price, isPremium, attachment = [] } = item
 
-  console.log(item)
-  console.log(`${API_BASE_URL}/files/${attachment?.[0]?.path}`)
+  let imageUrl = undefined
+  if (attachment.length > 0) {
+    imageUrl = attachment.find((at) => at?.position === 0)?.path
+  }
+  // console.log(`${API_BASE_URL}/files/${attachment?.[0]?.path}`)
   return (
     <View style={styles.root}>
       <View style={[styles.container, styles[colorScheme]]}>
@@ -27,10 +30,10 @@ function Preview(item) {
             navigation.navigate(ROUTES.HOME_PRODUCT)
           }}
         >
-          {attachment?.[0]?.path ? (
+          {imageUrl ? (
             <Image
               style={styles.image}
-              source={{ uri: `${API_BASE_URL}/files/${attachment[0].path}` }}
+              source={{ uri: `${API_BASE_URL}/files/${imageUrl}` }}
             />
           ) : (
             <Image

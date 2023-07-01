@@ -13,3 +13,10 @@ export const isNestedRoute = (route) => {
   // TODO.Add more check here in the future
   return false
 }
+
+export const sortOptions = [
+  { value: 'createdAt,DESC', label: 'newest' },
+  { value: 'createdAt,ASC', label: 'oldest ' },
+  { value: 'price,DESC', label: 'most expensive ' },
+  { value: 'price,ASC', label: 'cheapest' },
+]
