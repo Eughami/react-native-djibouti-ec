@@ -20,3 +20,5 @@ export const sortOptions = [
   { value: 'price,DESC', label: 'most expensive ' },
   { value: 'price,ASC', label: 'cheapest' },
 ]
+
+export const DateOptions = ['today', 'This week', 'This month', 'All']

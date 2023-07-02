@@ -1,9 +1,13 @@
 import { useTheme } from '@react-navigation/native'
 import { StyleSheet, Text } from 'react-native'
 
-function FormLabel({ label }) {
+function FormLabel({ label, marginLeft }) {
   const { colors } = useTheme()
-  return <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
+  return (
+    <Text style={[styles.label, { color: colors.text, marginLeft }]}>
+      {label}
+    </Text>
+  )
 }
 
 export default FormLabel

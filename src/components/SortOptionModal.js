@@ -41,8 +41,8 @@ function SortOptionsModal({
             <SelectedOption
               text={option.label}
               key={option.value}
-              toggleFunc={() => handleSelection(option.value)}
-              isSelected={currentSelection === option.value}
+              toggleFunc={() => handleSelection(option)}
+              isSelected={currentSelection?.value === option.value}
             />
           ))}
         </View>

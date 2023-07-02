@@ -1,134 +1,220 @@
-import BaseView from '@components/BaseView';
-import { useTheme } from '@react-navigation/native';
-import { FlatList, ScrollView, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Preview from '@components/Preview';
+import FilterDrawer from '@components/FilterDrawer'
+import IconButton from '@components/IconButton'
+import Loader from '@components/Loader'
+import Preview from '@components/Preview'
+import SortOptionsModal from '@components/SortOptionModal'
+import { sortOptions } from '@constants/common'
+import { ROUTES } from '@constants/routes'
+import { extractRgbComponents } from '@constants/style'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { useTheme } from '@react-navigation/native'
+import { searchAds } from '@services/search'
+import { useStore } from '@zustand/store'
+import { useEffect, useState } from 'react'
+import {
+  FlatList,
+  LayoutAnimation,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native'
+import { useQuery } from 'react-query'
+// TODO. Add a way to not make a request initially and only make it when search/filters/sort are updated
 
-function Title({ text }) {
-  const { colors } = useTheme();
-  return (
-    <View style={{ margin: 20 }}>
-      <Text
-        style={{
-          color: colors.text,
-          fontSize: 18,
-          paddingLeft: 10,
-          fontWeight: 'bold',
-        }}
-      >
-        {text}
-      </Text>
-    </View>
-  );
-}
+const Drawer = createDrawerNavigator()
 
-function Avatar({ icon }) {
-  const { colors } = useTheme();
+function Search({ navigation }) {
+  const { colors, dark } = useTheme()
+  const filters = useStore((state) => state.filters)
+  const setFilters = useStore((state) => state.setFilters)
+  const [sort, setSort] = useState(sortOptions[0])
+  const [isOpen, setIsOpen] = useState(false)
+
+  const [hasMore, setHasMore] = useState(false)
+  const [page, setPage] = useState(1)
+  const [list, setList] = useState([])
+
+  const { blue, green, red } = extractRgbComponents(
+    dark ? colors.border : colors.background,
+  )
+  const [inputText, setInputText] = useState('')
+
+  const {
+    isLoading,
+    isFetching,
+    data: ads,
+    refetch,
+  } = useQuery('search-ads', () => searchAds(page, filters, sort.value), {
+    enabled: false,
+    onSuccess: (data) => {
+      setHasMore(page < data?.pageCount)
+      setList((list) => [...list, ...data.data])
+    },
+  })
+
+  useEffect(() => {
+    setList([])
+    console.log('Filters updated: ', filters)
+    console.log('sort updated: ', sort)
+    if (page !== 1) {
+      setPage(1)
+    } else {
+      refetch()
+    }
+  }, [sort, filters])
+
+  useEffect(() => {
+    refetch()
+  }, [page])
+
+  const handleToggleDropdown = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setIsOpen(!isOpen)
+  }
+
+  const handleOptionSelect = (option) => {
+    setSort(option)
+    setIsOpen(false)
+  }
+
+  const handleEndReached = () => {
+    if (hasMore) {
+      setPage(page + 1)
+    }
+  }
+
+  const loading = isLoading || isFetching
   return (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <View
-        style={{
-          width: 70,
-          height: 70,
-          marginHorizontal: 20,
-          marginVertical: 10,
-          backgroundColor: 'brown',
-          borderRadius: 50,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Ionicons
-          name={icon}
-          size={35}
-          color="white"
-          // onPress={() => console.log('Navigate to that category')}
+    <View style={[styles.container, { backgroundColor: colors.card }]}>
+      {page === 1 && loading ? (
+        <Loader />
+      ) : (
+        <FlatList
+          style={{ flex: 1, width: '100%' }}
+          data={list}
+          renderItem={(itemData) => <Preview {...itemData.item} />}
+          keyExtractor={(item) => item.id}
+          ListFooterComponent={hasMore || loading ? Loader : null}
+          onEndReached={handleEndReached}
+          stickyHeaderHiddenOnScroll
+          onEndReachedThreshold={0.5}
+          ListHeaderComponent={
+            <>
+              <View style={styles.sortContainer}>
+                <View
+                  style={[
+                    styles.iconButtonContainer,
+                    {
+                      backgroundColor: `rgba(${red},${green},${blue},1)`,
+                    },
+                  ]}
+                >
+                  <IconButton
+                    icon='swap-vertical-outline'
+                    color={colors.text}
+                    size={20}
+                    onPress={handleToggleDropdown}
+                    // TODO.
+                    text={sort.label || 'Sort'}
+                  />
+                </View>
+                <View
+                  style={[
+                    styles.iconButtonContainer,
+                    {
+                      backgroundColor: `rgba(${red},${green},${blue},1)`,
+                    },
+                  ]}
+                >
+                  <IconButton
+                    icon='funnel-outline'
+                    color={colors.text}
+                    size={20}
+                    onPress={() => navigation.toggleDrawer()}
+                    // TODO.
+                    // text={sort.label || 'Sort'}
+                    text='Filter'
+                  />
+                </View>
+              </View>
+              <TextInput
+                style={{
+                  width: '100%',
+                  height: 50,
+                  margin: 10,
+                  backgroundColor: colors.border,
+                  color: colors.text,
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                }}
+                onSubmitEditing={() =>
+                  setFilters({ ...filters, keyword: inputText })
+                }
+                value={inputText}
+                onChangeText={(value) => setInputText(value)}
+                returnKeyType='search'
+                // placeholder='useless placeholder'
+                // keyboardType="numeric"
+              />
+            </>
+          }
+          // ListEmptyComponent={
+          //   <View
+          //     style={{
+          //       flex: 1,
+          //       height: 100,
+          //       justifyContent: 'center',
+          //       alignItems: 'center',
+          //     }}
+          //   >
+          //     <Text style={{ color: colors.text }}>No ads Found.</Text>
+          //   </View>
+          // }
         />
-      </View>
-      <Text
-        style={{
-          color: colors.text,
-          textAlign: 'center',
-          width: 80,
-        }}
-      >
-        small title
-      </Text>
-    </View>
-  );
-}
+      )}
 
-function TopCategories() {
-  // TODO. remove this flatlist and make it  a fixed 6  items
-  return (
-    <View>
-      <FlatList
-        contentContainerStyle={{
-          alignItems: 'center',
-        }}
-        data={[
-          'musical-notes-outline',
-          'car-outline',
-          'home-outline',
-          'briefcase-outline',
-          'key-outline',
-          'laptop-outline',
-        ]}
-        renderItem={(itemData) => <Avatar icon={itemData.item} />}
-        keyExtractor={(item) => item}
-        numColumns={3}
+      <SortOptionsModal
+        isOpen={isOpen}
+        toggleFunc={() => setIsOpen(!isOpen)}
+        currentSelection={sort}
+        handleSelection={handleOptionSelect}
       />
     </View>
-  );
+  )
 }
 
-function Search() {
+function DrawerNav() {
   return (
-    <ScrollView>
-      <Title text="Top Categories" />
-      <TopCategories />
-      <Title text="Latest Ads" />
-      {[
-        {
-          key: 1,
-          title: 'First Product title',
-          imageUrl:
-            'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aHVtYW58ZW58MHx8MHx8fDA%3D&w=1000&q=80',
-        },
-        {
-          key: 2,
-          title: 'Second Product title',
-          imageUrl:
-            'https://ik.imagekit.io/dahaboo/tr:w-325/upload/i/2023-06/voiture-toyota-highlander-annee-2017-xle-awd-r3j-192912.jpg',
-        },
-        {
-          key: 3,
-          title: 'Third Product title',
-          imageUrl:
-            'https://media.istockphoto.com/id/1146517111/photo/taj-mahal-mausoleum-in-agra.jpg?s=612x612&w=0&k=20&c=vcIjhwUrNyjoKbGbAQ5sOcEzDUgOfCsm9ySmJ8gNeRk=',
-        },
-        {
-          key: 4,
-          title: 'Fourth Product title',
-          imageUrl:
-            'https://imgd.aeplcdn.com/1056x594/n/cw/ec/44686/activa-6g-right-front-three-quarter.jpeg',
-        },
-        {
-          key: 5,
-          title: 'Fifth Product title',
-          imageUrl:
-            'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Ym9va3xlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80',
-        },
-      ].map((item) => (
-        <Preview {...item} />
-      ))}
-    </ScrollView>
-  );
+    <Drawer.Navigator
+      // TODO.Add custom content here
+      drawerContent={(props) => <FilterDrawer {...props} />}
+      screenOptions={({ navigation, route }) => ({
+        swipeEdgeWidth: 300,
+        headerShown: false,
+        unmountOnBlur: true,
+
+        drawerPosition: 'right',
+      })}
+    >
+      <Drawer.Screen name={ROUTES.SEARCH} component={Search} />
+    </Drawer.Navigator>
+  )
 }
 
-export default Search;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  sortContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  iconButtonContainer: {
+    borderRadius: 20,
+    // padding: 2,
+    marginHorizontal: 5,
+  },
+})
+
+export default DrawerNav

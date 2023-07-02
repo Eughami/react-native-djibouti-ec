@@ -44,7 +44,7 @@ function BottomNav() {
             iconName = focused ? 'add-circle-sharp' : 'add-circle-outline'
           } else if (route.name === ROUTES.MY_ADS) {
             iconName = focused ? 'person' : 'person-outline'
-          } else if (route.name === ROUTES.SEARCH) {
+          } else if (route.name === ROUTES.SEARCH_STACK) {
             iconName = focused ? 'search' : 'search-outline'
           }
 
@@ -52,8 +52,8 @@ function BottomNav() {
         },
       })}
     >
+      <BottomTab.Screen name={ROUTES.SEARCH_STACK} component={Search} />
       <BottomTab.Screen name={ROUTES.HOME_STACK} component={HomeStack} />
-      <BottomTab.Screen name={ROUTES.SEARCH} component={Search} />
       <BottomTab.Screen name={ROUTES.NEW_AD} component={NewAd} />
       <BottomTab.Screen name={ROUTES.MY_ADS} component={MyAds} />
     </BottomTab.Navigator>

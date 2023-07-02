@@ -25,7 +25,7 @@ function Category() {
   const [hasMore, setHasMore] = useState(false)
   const [page, setPage] = useState(1)
   const [list, setList] = useState([])
-  const [sort, setSort] = useState('createdAt,DESC')
+  const [sort, setSort] = useState(sortOptions[0])
   const { name, params } = useRoute()
   const { colors, dark } = useTheme()
   const navigation = useNavigation()
@@ -40,7 +40,7 @@ function Category() {
     refetch,
   } = useQuery(
     `${name}-ads`,
-    () => adsPerCategory(page, params?.category, sort),
+    () => adsPerCategory(page, params?.category, sort.value),
     {
       onSuccess: (data) => {
         setHasMore(page < data?.pageCount)
@@ -93,7 +93,7 @@ function Category() {
           color={colors.text}
           size={20}
           onPress={handleToggleDropdown}
-          text='Sort'
+          text={sort.label || 'Sort'}
         />
       </View>
     </View>

@@ -5,8 +5,13 @@ export const useStore = create((set) => ({
   swithTheme: (theme) => set((state) => ({ theme })),
   routeName: '',
   setRouteName: (routeName) => set((state) => ({ routeName })),
-  bears: 0,
-  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-  randomPopulation: (randomNum) => set((state) => ({ bears: randomNum })),
-  removeAllBears: () => set({ bears: 0 }),
+  filters: {
+    keyword: '',
+    adType: true,
+    categories: [],
+    date: 'All',
+    max: undefined,
+    min: undefined,
+  },
+  setFilters: (filters) => set((state) => ({ filters })),
 }))

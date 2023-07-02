@@ -6,7 +6,8 @@ export const ROUTES = {
   HOME_PRODUCT: 'Home.Product',
   HOME_CATEGORY: 'Home.Category',
   HOME_CATEGORIES: 'Home.Categories',
-  SEARCH: 'Search',
+  SEARCH: 'Search ',
+  SEARCH_STACK: 'Search',
   NEW_AD: 'NewAd',
   MY_ADS: 'MyAds',
 }
