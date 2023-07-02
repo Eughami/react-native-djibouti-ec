@@ -19,7 +19,6 @@ import {
   View,
 } from 'react-native'
 import { useQuery } from 'react-query'
-// TODO. Add a way to not make a request initially and only make it when search/filters/sort are updated
 
 const Drawer = createDrawerNavigator()
 
@@ -29,6 +28,7 @@ function Search({ navigation }) {
   const setFilters = useStore((state) => state.setFilters)
   const [sort, setSort] = useState(sortOptions[0])
   const [isOpen, setIsOpen] = useState(false)
+  const [initialRender, setInitialRender] = useState(true)
 
   const [hasMore, setHasMore] = useState(false)
   const [page, setPage] = useState(1)
@@ -53,6 +53,11 @@ function Search({ navigation }) {
   })
 
   useEffect(() => {
+    if (initialRender) {
+      setInitialRender(false)
+      return
+    }
+
     setList([])
     console.log('Filters updated: ', filters)
     console.log('sort updated: ', sort)
@@ -64,6 +69,8 @@ function Search({ navigation }) {
   }, [sort, filters])
 
   useEffect(() => {
+    if (initialRender) return
+
     refetch()
   }, [page])
 
@@ -86,6 +93,57 @@ function Search({ navigation }) {
   const loading = isLoading || isFetching
   return (
     <View style={[styles.container, { backgroundColor: colors.card }]}>
+      <View style={styles.sortContainer}>
+        <View
+          style={[
+            styles.iconButtonContainer,
+            {
+              backgroundColor: `rgba(${red},${green},${blue},1)`,
+            },
+          ]}
+        >
+          <IconButton
+            icon='swap-vertical-outline'
+            color={colors.text}
+            size={20}
+            onPress={handleToggleDropdown}
+            text={sort.label || 'Sort'}
+          />
+        </View>
+        <View
+          style={[
+            styles.iconButtonContainer,
+            {
+              backgroundColor: `rgba(${red},${green},${blue},1)`,
+            },
+          ]}
+        >
+          <IconButton
+            icon='funnel-outline'
+            color={colors.text}
+            size={20}
+            onPress={() => navigation.toggleDrawer()}
+            text='Filter'
+          />
+        </View>
+      </View>
+      <TextInput
+        style={{
+          height: 50,
+          marginVertical: 10,
+          marginHorizontal: 5,
+          backgroundColor: colors.border,
+          color: colors.text,
+          borderColor: colors.border,
+          borderWidth: 1,
+        }}
+        onSubmitEditing={() => setFilters({ ...filters, keyword: inputText })}
+        value={inputText}
+        onChangeText={(value) => setInputText(value)}
+        returnKeyType='search'
+        placeholder=' Search for ads'
+        placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+      />
       {page === 1 && loading ? (
         <Loader />
       ) : (
@@ -98,66 +156,11 @@ function Search({ navigation }) {
           onEndReached={handleEndReached}
           stickyHeaderHiddenOnScroll
           onEndReachedThreshold={0.5}
-          ListHeaderComponent={
-            <>
-              <View style={styles.sortContainer}>
-                <View
-                  style={[
-                    styles.iconButtonContainer,
-                    {
-                      backgroundColor: `rgba(${red},${green},${blue},1)`,
-                    },
-                  ]}
-                >
-                  <IconButton
-                    icon='swap-vertical-outline'
-                    color={colors.text}
-                    size={20}
-                    onPress={handleToggleDropdown}
-                    // TODO.
-                    text={sort.label || 'Sort'}
-                  />
-                </View>
-                <View
-                  style={[
-                    styles.iconButtonContainer,
-                    {
-                      backgroundColor: `rgba(${red},${green},${blue},1)`,
-                    },
-                  ]}
-                >
-                  <IconButton
-                    icon='funnel-outline'
-                    color={colors.text}
-                    size={20}
-                    onPress={() => navigation.toggleDrawer()}
-                    // TODO.
-                    // text={sort.label || 'Sort'}
-                    text='Filter'
-                  />
-                </View>
-              </View>
-              <TextInput
-                style={{
-                  width: '100%',
-                  height: 50,
-                  margin: 10,
-                  backgroundColor: colors.border,
-                  color: colors.text,
-                  borderColor: colors.border,
-                  borderWidth: 1,
-                }}
-                onSubmitEditing={() =>
-                  setFilters({ ...filters, keyword: inputText })
-                }
-                value={inputText}
-                onChangeText={(value) => setInputText(value)}
-                returnKeyType='search'
-                // placeholder='useless placeholder'
-                // keyboardType="numeric"
-              />
-            </>
-          }
+          // ListHeaderComponent={
+          //   <>
+
+          //   </>
+          // }
           // ListEmptyComponent={
           //   <View
           //     style={{

@@ -183,7 +183,7 @@ function FilterDrawer(props) {
           isSelected
           text='Apply'
           onPress={() => {
-            setFilters({ categories, date, min, max, adType })
+            setFilters({ ...filters, categories, date, min, max, adType })
             props.navigation.toggleDrawer()
           }}
         />
