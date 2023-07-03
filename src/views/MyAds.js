@@ -15,6 +15,7 @@ import {
   Pressable,
 } from 'react-native'
 
+// TODO. Initially show a modal asking for email and save it in the localStorage
 const Drawer = createDrawerNavigator()
 const Dropdown = ({ navigation }) => {
   const { colors, dark } = useTheme()

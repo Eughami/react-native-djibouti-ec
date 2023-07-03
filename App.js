@@ -29,10 +29,11 @@ export default function App() {
     // use that value
     // if !value then it is the firstTime so get the devicePreference
     swithTheme(Appearance.getColorScheme())
+    // TODO.Fetch email from storage and set it in the store
     // TODO. when a user explicitly changes the theme
     // save in localStorage and update the zustandStore
+    // TODO. Add a way to fetch user device details (make  all POST Req (favorite + postAdd) with the device identifier)
   }, [])
-  // TODO.find a way to avoid the shift of the drawer toggle in homepage
 
   const _routeNameRef = useRef()
   const _navigationRefRoot = useRef()

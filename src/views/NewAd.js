@@ -21,6 +21,7 @@ import { CategoryEnum } from '@constants/categories'
 import Progressoverlay from '@components/ProgressOverlay'
 import axiosInstance from '@constants/axiosInstance'
 
+// TODO. Initially show a modal asking for email and save it in the localStorage
 function NewAd() {
   const { colors, dark } = useTheme()
   const video = useRef(null)
