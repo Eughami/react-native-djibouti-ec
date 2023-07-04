@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "dahabo-android",
-    "slug": "dahabo-android",
+    "slug": "djibouti-ec",
     "version": "1.0.0",
-    "orientation": "automatic",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -11,11 +11,16 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.eughami.djiboutiec",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -23,6 +28,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "045def02-df14-4d9f-8def-35afc0bfb05d"
+      }
+    },
+    "owner": "eughami"
   }
 }

@@ -59,8 +59,6 @@ function Search({ navigation }) {
     }
 
     setList([])
-    console.log('Filters updated: ', filters)
-    console.log('sort updated: ', sort)
     if (page !== 1) {
       setPage(1)
     } else {

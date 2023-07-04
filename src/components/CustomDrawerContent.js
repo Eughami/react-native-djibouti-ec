@@ -8,6 +8,7 @@ import IconButton from './IconButton'
 import LangModal from './LanguageModal'
 import { useStore } from '@zustand/store'
 import { CategoryEnum } from '@constants/categories'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function CustomDrawerContent(props) {
   const { colors: themeColors, dark } = useTheme()
@@ -439,8 +440,9 @@ function CustomDrawerContent(props) {
             // TODO.maybe handle it in a modal in the future for more options
             // props.navigation.toggleDrawer()
             // toggleModal()
-
-            swithTheme(theme === 'light' ? 'dark' : 'light')
+            const newTheme = theme === 'light' ? 'dark' : 'light'
+            AsyncStorage.setItem('theme', newTheme)
+            swithTheme(newTheme)
           }}
         />
         <Image

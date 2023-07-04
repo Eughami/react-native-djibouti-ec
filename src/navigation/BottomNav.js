@@ -52,8 +52,8 @@ function BottomNav() {
         },
       })}
     >
-      <BottomTab.Screen name={ROUTES.SEARCH_STACK} component={Search} />
       <BottomTab.Screen name={ROUTES.HOME_STACK} component={HomeStack} />
+      <BottomTab.Screen name={ROUTES.SEARCH_STACK} component={Search} />
       <BottomTab.Screen name={ROUTES.NEW_AD} component={NewAd} />
       <BottomTab.Screen name={ROUTES.MY_ADS} component={MyAds} />
     </BottomTab.Navigator>

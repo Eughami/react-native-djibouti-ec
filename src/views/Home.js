@@ -90,7 +90,6 @@ function HomePage() {
 }
 
 function HomeAds({ loading, ads, refetch }) {
-  console.log(loading, ads)
   const { colors } = useTheme()
   if (loading)
     return (
