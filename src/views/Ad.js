@@ -33,7 +33,6 @@ function Ad() {
   } = useQuery(`ads-${params?.id}`, () => getProduct(params?.id), {
     onSuccess: (data) => adview(data.id),
   })
-  console.log(ad)
   const loading = isFetching || isLoading
   if (loading) return <Loader />
   return (

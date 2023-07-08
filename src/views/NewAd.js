@@ -22,7 +22,6 @@ import Progressoverlay from '@components/ProgressOverlay'
 import axiosInstance from '@constants/axiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-// TODO. Initially show a modal asking for email and save it in the localStorage
 function NewAd() {
   const { colors, dark } = useTheme()
   const video = useRef(null)

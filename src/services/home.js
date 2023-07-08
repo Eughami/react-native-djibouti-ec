@@ -1,4 +1,5 @@
 import axiosInstance from '@constants/axiosInstance'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const homePageAds = () => {
   return axiosInstance({
@@ -21,4 +22,27 @@ export const getProduct = (id) => {
     .catch((err) =>
       errorLog({ ...err, msg: `something went wrong on getProduct ${id}` }),
     )
+}
+
+export const getMyAds = async () => {
+  const deviceId = await AsyncStorage.getItem('deviceId')
+  if (!deviceId) return
+
+  return axiosInstance({
+    method: 'get',
+    url: `/ads?join=attachment&join=device&sort=createdAt,DESC&filter=device.id||eq||${deviceId}`,
+  })
+    .then((res) => res)
+    .catch((err) =>
+      errorLog({ ...err, msg: 'Error while getting own ads' }, deviceId),
+    )
+}
+
+export const deleteAd = (id) => {
+  return axiosInstance({
+    url: `ads/${id}`,
+    method: 'delete',
+  })
+    .then((data) => data)
+    .catch((err) => console.log(err))
 }

@@ -9,5 +9,6 @@ export const ROUTES = {
   SEARCH: 'Search ',
   SEARCH_STACK: 'Search',
   NEW_AD: 'NewAd',
-  MY_ADS: 'MyAds',
+  PROFILE_STACK: 'Profile',
+  MY_ADS: 'MyProfile',
 }

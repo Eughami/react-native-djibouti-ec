@@ -7,6 +7,8 @@ export const useStore = create((set) => ({
   setDeviceId: (deviceId) => set((state) => ({ deviceId })),
   routeName: '',
   setRouteName: (routeName) => set((state) => ({ routeName })),
+  prevRouteName: '',
+  setPrevRouteName: (prevRouteName) => set((state) => ({ prevRouteName })),
   filters: {
     keyword: '',
     adType: true,

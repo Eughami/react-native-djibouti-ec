@@ -40,7 +40,7 @@ function Category() {
     refetch,
   } = useQuery(
     `${name}-ads`,
-    () => adsPerCategory(page, params?.category, sort.value),
+    () => adsPerCategory(page, name.split('.').pop(), sort.value),
     {
       onSuccess: (data) => {
         setHasMore(page < data?.pageCount)
