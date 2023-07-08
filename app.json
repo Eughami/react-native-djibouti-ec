@@ -34,6 +34,9 @@
         "projectId": "045def02-df14-4d9f-8def-35afc0bfb05d"
       }
     },
-    "owner": "eughami"
+    "owner": "eughami",
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }

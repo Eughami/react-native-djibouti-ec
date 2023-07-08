@@ -3,7 +3,8 @@ import { ROUTES } from './routes'
 
 export const handleRoutetitle = (key) => {
   // TODO.Handle formatting & translation here
-  if (key.startsWith(ROUTES.HOME_CATEGORY)) return key.split('.').pop()
+  // TODO key with . are nested so only set the last text
+  if (key.startsWith('Home.')) return key.split('.').pop()
   return key
 }
 

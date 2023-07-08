@@ -11,5 +11,10 @@ export const adsPerCategory = (page, category = null, sort = null) => {
     url: `/ads?join=attachment&sort=${sortStr}&limit=4&page=${page}${categoryFilter}`,
   })
     .then((res) => res)
-    .catch((err) => console.log('Error while fetching data'))
+    .catch((err) =>
+      errorLog({
+        ...err,
+        msg: `something went wrong on category ${category} query`,
+      }),
+    )
 }

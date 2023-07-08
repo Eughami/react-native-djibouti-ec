@@ -16,7 +16,7 @@ function HomeStack() {
       })}
     >
       <Stack.Screen name={ROUTES.HOME} component={Home} />
-      <Stack.Screen name={ROUTES.HOME_PRODUCT} component={Ad} />
+      <Stack.Screen name={ROUTES.HOME_AD} component={Ad} />
       <Stack.Screen name={ROUTES.HOME_CATEGORY} component={Category} />
       <Stack.Screen name={ROUTES.HOME_CATEGORIES} component={Categories} />
       {Object.keys(CategoryEnum).map((cat, i) => (

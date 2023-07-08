@@ -20,6 +20,7 @@ import { Video, ResizeMode } from 'expo-av'
 import { CategoryEnum } from '@constants/categories'
 import Progressoverlay from '@components/ProgressOverlay'
 import axiosInstance from '@constants/axiosInstance'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // TODO. Initially show a modal asking for email and save it in the localStorage
 function NewAd() {
@@ -77,6 +78,8 @@ function NewAd() {
     }
 
     setModalVisible(true)
+    let deviceId = await AsyncStorage.getItem('deviceId')
+    formData.append('deviceId', deviceId)
     axiosInstance({
       url: '/ads',
       method: 'POST',

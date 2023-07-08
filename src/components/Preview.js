@@ -27,7 +27,7 @@ function Preview(item) {
       <View style={[styles.container, styles[colorScheme]]}>
         <Pressable
           onPress={() => {
-            navigation.navigate(ROUTES.HOME_PRODUCT)
+            navigation.navigate(ROUTES.HOME_AD, { id: item.id })
           }}
         >
           {imageUrl ? (
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     // top: 10, // Adjust the top position as per your requirement
     right: 10, // Adjust the left position as per your requirement
-    backgroundColor: '#ff9009', // Customize the ribbon background color
+    backgroundColor: '#FF6F61', // Customize the ribbon background color
     paddingHorizontal: 10,
     paddingVertical: 5,
     // transform: [{ rotate: '45deg' }],

@@ -1,159 +1,129 @@
-import IconButton from '@components/IconButton'
-import SelectedOption from '@components/SelectedOption'
-import { sortOptions } from '@constants/common'
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import { useTheme } from '@react-navigation/native'
-import React, { useState } from 'react'
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  LayoutAnimation,
-  Button,
-  Modal,
-  Pressable,
-} from 'react-native'
+import Loader from '@components/Loader'
+import { ImageZoom } from '@likashefqet/react-native-image-zoom'
+import { ResizeMode, Video } from 'expo-av'
+import * as React from 'react'
+import { Dimensions, Image, Text, View } from 'react-native'
+import Carousel from 'react-native-reanimated-carousel'
 
-// TODO. Initially show a modal asking for email and save it in the localStorage
-const Drawer = createDrawerNavigator()
-const Dropdown = ({ navigation }) => {
-  const { colors, dark } = useTheme()
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedOption, setSelectedOption] = useState('')
+function Index() {
+  const width = Dimensions.get('window').width
+  const height = Dimensions.get('window').height
+  const video = React.useRef(null)
+  const carouselRef = React.useRef(null)
+  const [index, setIndex] = React.useState(0)
 
-  const options = ['Option 1', 'Option 2', 'Option 3']
+  // const [status, setStatus] = React.useState({})
 
-  const handleToggleDropdown = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setIsOpen(!isOpen)
+  const handleScrollEnd = (index) => {
+    setIndex(index)
+    // console.log(index)
+    // // Check if the scroll position has reached the end
+    // if (index === 2 - 1) {
+    //   // Prevent the scroll from resting at the first position
+    //   const scrollPosition = { x: (2 - 1) * width, y: 0 }
+    //   carouselRef.current.scrollTo(1)
+    // }
   }
 
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option)
-    setIsOpen(false)
-  }
+  React.useEffect(() => {
+    const ii = carouselRef.current.getCurrentIndex()
+    setIndex(ii)
+    console.log('reff ', ii)
+    carouselRef.current.prev = () => {}
+    carouselRef.current.next = () => {}
+  }, [carouselRef.current])
+
+  console.log('outside index : ', index)
 
   return (
-    <View style={styles.container}>
-      <View style={styles.sortContainer}>
-        <IconButton
-          icon='swap-vertical-outline'
-          color={colors.text}
-          size={30}
-          onPress={handleToggleDropdown}
-          text='Sort'
-        />
-      </View>
-      <Button title='drawer' onPress={() => navigation.toggleDrawer()} />
-
-      <Modal
-        visible={isOpen}
-        transparent={true}
-        onRequestClose={() => setIsOpen(false)}
-      >
-        <Pressable
-          onPress={() => setIsOpen(false)}
-          style={{
-            flex: 1,
-            backgroundColor: dark ? 'rgba(1, 1, 1, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <Carousel
+        ref={carouselRef}
+        // pagingEnabled={true}
+        // onScrollBegin={}
+        // loop
+        width={width}
+        height={height * 0.6}
+        // autoPlay={true}
+        data={[...new Array(2).keys()]}
+        scrollAnimationDuration={500}
+        onScrollBegin={() => {
+          carouselRef.current.prev = () => {}
+          carouselRef.current.next = () => {}
+        }}
+        style={{
+          borderWidth: 1,
+          borderColor: 'red',
+        }}
+        // mode='parallax'
+        onScrollEnd={handleScrollEnd}
+        // onSnapToItem={(index) => setIndex(index)}
+        renderItem={({ index }) => (
           <View
             style={{
-              backgroundColor: dark ? colors.border : colors.card,
-              padding: 16,
-              borderRadius: 10,
+              flex: 1,
+              justifyContent: 'center',
             }}
           >
-            <Text
-              style={{
-                color: colors.text,
-                fontWeight: 'bold',
-                marginVertical: 10,
-              }}
-            >
-              Select which Ads you would like to see first
-            </Text>
-            {sortOptions.map((option) => (
-              <SelectedOption
-                text={option.label}
-                key={option.value}
-                toggleFunc={() => handleOptionSelect(option.value)}
-                isSelected={selectedOption === option.value}
+            {index === 0 ? (
+              <ImageZoom
+                uri='https://dahabo-api.eughami.com/api/v1/files/images/Car/d3dcc536-aefb-4add-a5c5-99920957fac3.jpeg'
+                loadingIndicatorSource={<Loader />}
               />
-            ))}
+            ) : (
+              <Video
+                ref={video}
+                isMuted
+                style={{
+                  margin: 10,
+                  width: '95%',
+                  height: '95%',
+                  // borderColor: colors.border,
+                  // borderWidth: 1,
+                }}
+                source={{
+                  uri: 'https://dahabo-api.eughami.com/api/v1/files/videos/Game/63ae61c1-87d1-4583-b484-31efc04b871b.mp4',
+                }}
+                useNativeControls
+                resizeMode={ResizeMode.CONTAIN}
+                // isLooping
+                // shouldPlay
+                // onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              />
+            )}
           </View>
-        </Pressable>
-      </Modal>
+        )}
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          height: 50,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {console.log('reder index : ', index)}
+        <View
+          style={{
+            height: index === 0 ? 10 : 5,
+            width: index === 0 ? 10 : 5,
+            backgroundColor: 'black',
+            marginHorizontal: 5,
+            borderRadius: 20,
+          }}
+        ></View>
+        <View
+          style={{
+            height: index === 1 ? 10 : 5,
+            width: index === 1 ? 10 : 5,
+            backgroundColor: 'black',
+            marginHorizontal: 5,
+            borderRadius: 20,
+          }}
+        ></View>
+      </View>
     </View>
   )
 }
 
-function DrawerNav() {
-  return (
-    <Drawer.Navigator
-      // drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={({ navigation, route }) => ({
-        // drawerActiveTintColor: COLORS.primary.dark600,
-        // drawerActiveBackgroundColor: COLORS.primary.light300,
-        headerShown: false,
-        drawerPosition: 'right',
-        // swipeEnabled: false,
-      })}
-    >
-      <Drawer.Screen name='Search-shit' component={Dropdown} />
-    </Drawer.Navigator>
-  )
-}
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    flex: 1,
-    // flexDirection: 'row',
-  },
-  triggerContainer: {
-    // flex: 1,
-  },
-  trigger: {
-    padding: 10,
-  },
-  dropdown: {
-    position: 'absolute',
-    top: 40,
-    right: 10,
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 10,
-    zIndex: 1,
-  },
-  cone: {
-    position: 'absolute',
-    top: -10,
-    alignSelf: 'center',
-    width: 0,
-    height: 0,
-    borderLeftWidth: 5,
-    borderRightWidth: 5,
-    borderBottomWidth: 10,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#ccc',
-  },
-  option: {
-    paddingVertical: 8,
-  },
-  sortContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginHorizontal: 10,
-  },
-})
-
-export default DrawerNav
+export default Index

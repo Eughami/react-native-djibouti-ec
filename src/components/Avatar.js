@@ -20,7 +20,7 @@ function Avatar({ icon, title }) {
           height: 70,
           marginVertical: 10,
 
-          backgroundColor: 'brown',
+          backgroundColor: '#FF7F50',
           borderRadius: 50,
           justifyContent: 'center',
           alignItems: 'center',

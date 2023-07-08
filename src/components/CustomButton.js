@@ -15,7 +15,7 @@ function CustomButton({ text, isSelected, onPress, width = '45%' }) {
           borderColor: colors.border,
           borderWidth: 1,
         },
-        isSelected && { backgroundColor: COLORS.primary.color },
+        isSelected && { backgroundColor: '#FFD700', borderWidth: 0 },
         pressed && { opacity: 0.7 },
       ]}
     >

@@ -1,5 +1,6 @@
 import axiosInstance from '@constants/axiosInstance'
 import { DateOptions } from '@constants/common'
+import { errorLog } from './log'
 
 export const searchAds = (page, filters = {}, sort = null) => {
   console.log('Api called ')
@@ -13,7 +14,9 @@ export const searchAds = (page, filters = {}, sort = null) => {
     )}`,
   })
     .then((res) => res)
-    .catch((err) => console.log('Error while fetching data'))
+    .catch((err) =>
+      errorLog({ ...err, msg: 'something went wrong on search query' }),
+    )
 }
 
 const formatFilters = (filters) => {

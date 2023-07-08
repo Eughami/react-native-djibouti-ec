@@ -18,9 +18,11 @@ function BottomNav() {
     <BottomTab.Navigator
       screenOptions={({ route, navigation }) => ({
         headerStyle: { backgroundColor: COLORS.primary.color },
-        headerTintColor: 'white',
+        headerTintColor: '#87CEEB',
         headerTitle: handleRoutetitle(routeName),
         tabBarActiveTintColor: COLORS.primary.light400,
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: routeName.includes('.') && { display: 'none' },
         headerLeft: ({ tintColor }) => (
           <IconButton
             icon={

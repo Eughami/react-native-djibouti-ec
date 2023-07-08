@@ -15,7 +15,7 @@ import * as Notifications from 'expo-notifications'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import axiosInstance from '@constants/axiosInstance'
-import { postLogs } from '@services/log'
+import { errorLog, postLogs } from '@services/log'
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
@@ -27,27 +27,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 })
-
-// Can use this function below OR use Expo's Push Notification Tool from: https://expo.dev/notifications
-async function sendPushNotification(expoPushToken) {
-  const message = {
-    to: expoPushToken,
-    sound: 'default',
-    title: 'Original Title',
-    body: 'And here is the body!',
-    data: { someData: 'goes here' },
-  }
-
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  })
-}
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -123,7 +102,7 @@ export default function App() {
           const token = await registerForPushNotificationsAsync()
           const device = await axiosInstance({
             method: 'POST',
-            url: '/ads/device',
+            url: '/devices',
             data: { ...Device, token },
           })
           log['isFirstTime'] = true
@@ -143,12 +122,12 @@ export default function App() {
         delete log['tt']
         log['total'] = performance.now() - st
       } catch (error) {
-        // TODO. Add logs to monitor general user erros
-        console.log('Something went wront! Oops!', error)
+        errorLog({ ...error, msg: 'something went wrong on startup' }, null)
       }
       setAppIsReady(true)
       postLogs({ type: 'INITIAL_LOAD', payload: log })
     }
+    // AsyncStorage.getAllKeys().then((keys) => AsyncStorage.multiRemove(keys))
     fetchConfigs()
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current)
