@@ -25,8 +25,10 @@ import { ROUTES } from '@constants/routes'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useStore } from '@zustand/store'
 import { Ionicons } from '@expo/vector-icons'
+import { useQueryClient } from 'react-query'
 
 function NewAd() {
+  const queryClient = useQueryClient()
   const { colors, dark } = useTheme()
   const video = useRef(null)
   const [images, setImages] = useState([])
@@ -99,6 +101,8 @@ function NewAd() {
     })
       .then(function (response) {
         console.log('response :', response)
+        queryClient.invalidateQueries('my-ads')
+
         setModalVisible(false)
         resetAll()
         // TODO.change the content of the modal to show a close button with a success msg (?redirect to home?)

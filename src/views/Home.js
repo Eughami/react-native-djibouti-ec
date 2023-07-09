@@ -11,11 +11,12 @@ import Preview from '@components/Preview'
 import Avatar from '@components/Avatar'
 import { HomeCategories } from '@constants/categories'
 import { useQuery } from 'react-query'
-import { homePageAds } from '@services/home'
+import { getFav, homePageAds } from '@services/home'
 import Loader from '@components/Loader'
 import { COLORS } from '@constants/style'
 import { useRefreshOnFocus } from '@components/FocusRefetch'
 import { useEffect } from 'react'
+import { useStore } from '@zustand/store'
 
 function Title({ text }) {
   const { colors } = useTheme()
@@ -56,12 +57,18 @@ function TopCategories() {
 
 function HomePage() {
   const { colors } = useTheme()
+  const setFavCat = useStore((state) => state.setFavCat)
+
   const {
     isLoading,
     isFetching,
     data: ads,
     refetch,
   } = useQuery('home-page-ads', () => homePageAds(), {})
+
+  const {} = useQuery('fav-cat', () => getFav(), {
+    onSuccess: (data) => setFavCat(data?.favoriteCategories ?? []),
+  })
 
   // TODO.Screen focus refetch worth it ??
   // useRefreshOnFocus(refetch)

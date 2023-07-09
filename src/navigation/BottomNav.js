@@ -8,8 +8,6 @@ import NewAd from '@views/NewAd'
 import MyAds from '@views/MyAds'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeStack from './HomeStack'
-import { handleRoutetitle } from '@constants/common'
-import { CommonActions } from '@react-navigation/native'
 
 const BottomTab = createBottomTabNavigator()
 

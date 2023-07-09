@@ -6,7 +6,14 @@ import { useRoute, useTheme } from '@react-navigation/native'
 import { getProduct } from '@services/home'
 import { ResizeMode, Video } from 'expo-av'
 import { useRef, useState } from 'react'
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
+import {
+  Dimensions,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import Carousel from 'react-native-reanimated-carousel'
 import { useQuery } from 'react-query'
 import { Ionicons } from '@expo/vector-icons'
@@ -44,6 +51,7 @@ function Ad() {
           width={width - 20}
           height={height * 0.5}
           data={ad.attachment}
+          enabled={ad?.attachment?.length > 1}
           scrollAnimationDuration={800}
           style={{
             borderWidth: 1,
@@ -84,18 +92,22 @@ function Ad() {
           )}
         />
         <View style={styles.pagination}>
-          {[...new Array(ad.attachment.length)].map((c, i) => (
-            <View
-              key={i}
-              style={{
-                height: index === i ? 10 : 5,
-                width: index === i ? 10 : 5,
-                backgroundColor: colors.text,
-                marginHorizontal: 5,
-                borderRadius: 20,
-              }}
-            />
-          ))}
+          {ad?.attachment?.length > 1 && (
+            <>
+              {[...new Array(ad.attachment.length)].map((c, i) => (
+                <View
+                  key={i}
+                  style={{
+                    height: index === i ? 10 : 5,
+                    width: index === i ? 10 : 5,
+                    backgroundColor: colors.text,
+                    marginHorizontal: 5,
+                    borderRadius: 20,
+                  }}
+                />
+              ))}
+            </>
+          )}
         </View>
 
         <Text style={styles.description}>{ad.description}</Text>
@@ -108,15 +120,33 @@ function Ad() {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name='eye' size={12} />
               <Text style={styles.viewsText}>
-                {parseInt(ad.price).toLocaleString('en-US')}
+                {parseInt(ad.count).toLocaleString('en-US')}
               </Text>
             </View>
           </View>
         </View>
       </ScrollView>
-      <View style={{ flexDirection: 'row' }}>
-        <CustomButton width={'50%'} text='Phone' />
-        <CustomButton width={'50%'} text='Whasapp' isSelected />
+      <View style={{ flexDirection: 'row', position: 'absolute', bottom: 0 }}>
+        <CustomButton
+          width={'50%'}
+          text='CALL'
+          icon='call-outline'
+          bg='#2270af'
+          color='white'
+          onPress={() => Linking.openURL(`tel:+253${ad.phone}`)}
+        />
+        <CustomButton
+          width={'50%'}
+          text='WHASAPP'
+          icon='logo-whatsapp'
+          bg='green'
+          color='white'
+          onPress={() =>
+            Linking.openURL(
+              `whatsapp://send?text=Hello i'm interested in your ad&phone=253${ad.phone}`,
+            )
+          }
+        />
       </View>
     </>
   )

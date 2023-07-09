@@ -6,7 +6,6 @@ import SortOptionsModal from '@components/SortOptionModal'
 import { sortOptions } from '@constants/common'
 import { ROUTES } from '@constants/routes'
 import { COLORS, extractRgbComponents } from '@constants/style'
-import { createDrawerNavigator } from '@react-navigation/drawer'
 import { useTheme } from '@react-navigation/native'
 import { searchAds } from '@services/search'
 import { useStore } from '@zustand/store'
@@ -15,6 +14,7 @@ import {
   FlatList,
   LayoutAnimation,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native'
@@ -22,8 +22,7 @@ import { useQuery } from 'react-query'
 import { Ionicons } from '@expo/vector-icons'
 import Ad from './Ad'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-
-const Drawer = createDrawerNavigator()
+import { trendingAds } from '@services/category'
 
 function Search({ navigation }) {
   const { colors, dark } = useTheme()
@@ -61,9 +60,15 @@ function Search({ navigation }) {
     },
   })
 
+  const {
+    isLoading: topLoading,
+    isFetching: topFetching,
+    data: topAds,
+  } = useQuery('top-ads', trendingAds)
+
   useEffect(() => {
     if (initialRender) {
-      setInitialRender(false)
+      // setInitialRender(false)
       return
     }
 
@@ -88,6 +93,7 @@ function Search({ navigation }) {
 
   const handleOptionSelect = (option) => {
     setSort(option)
+    setInitialRender(false)
     setIsOpen(false)
   }
 
@@ -97,7 +103,7 @@ function Search({ navigation }) {
     }
   }
 
-  const loading = isLoading || isFetching
+  const loading = isLoading || isFetching || topFetching || topLoading
   return (
     <View style={[styles.container, { backgroundColor: colors.card }]}>
       <View style={styles.sortContainer}>
@@ -145,7 +151,10 @@ function Search({ navigation }) {
           borderColor: colors.border,
           borderWidth: 1,
         }}
-        onSubmitEditing={() => setFilters({ ...filters, keyword: inputText })}
+        onSubmitEditing={() => {
+          setInitialRender(false)
+          setFilters({ ...filters, keyword: inputText })
+        }}
         value={inputText}
         onChangeText={(value) => setInputText(value)}
         returnKeyType='search'
@@ -154,8 +163,25 @@ function Search({ navigation }) {
       />
       {page === 1 && loading ? (
         <Loader />
+      ) : topAds?.data?.length && initialRender ? (
+        <FlatList
+          key='top'
+          ListHeaderComponent={
+            <Text
+              style={{ flex: 1, padding: 10, fontWeight: 'bold', fontSize: 14 }}
+            >
+              Top Ads
+            </Text>
+          }
+          style={{ flex: 1, padding: 10 }}
+          data={topAds.data.sort((a, b) => b.count - a.count)}
+          renderItem={(itemData) => <Preview {...itemData.item} small />}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+        />
       ) : (
         <FlatList
+          key='searchResult'
           style={{ flex: 1, width: '100%' }}
           data={list}
           renderItem={(itemData) => <Preview {...itemData.item} />}
@@ -164,23 +190,18 @@ function Search({ navigation }) {
           onEndReached={handleEndReached}
           stickyHeaderHiddenOnScroll
           onEndReachedThreshold={0.5}
-          // ListHeaderComponent={
-          //   <>
-
-          //   </>
-          // }
-          // ListEmptyComponent={
-          //   <View
-          //     style={{
-          //       flex: 1,
-          //       height: 100,
-          //       justifyContent: 'center',
-          //       alignItems: 'center',
-          //     }}
-          //   >
-          //     <Text style={{ color: colors.text }}>No ads Found.</Text>
-          //   </View>
-          // }
+          ListEmptyComponent={
+            <View
+              style={{
+                flex: 1,
+                height: 100,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ color: colors.text }}>No ads Found.</Text>
+            </View>
+          }
         />
       )}
 
@@ -190,7 +211,12 @@ function Search({ navigation }) {
         currentSelection={sort}
         handleSelection={handleOptionSelect}
       />
-      {isDrawerOpen && <FilterDrawer toggle={toggleDrawer} />}
+      {isDrawerOpen && (
+        <FilterDrawer
+          toggle={toggleDrawer}
+          setInitialRender={setInitialRender}
+        />
+      )}
     </View>
   )
 }
@@ -225,23 +251,6 @@ function SearchStack() {
       <Stack.Screen name={ROUTES.SEARCH} component={Search} />
       <Stack.Screen name={ROUTES.HOME_AD} component={Ad} />
     </Stack.Navigator>
-  )
-}
-function DrawerNav() {
-  return (
-    <Drawer.Navigator
-      // TODO.Add custom content here
-      drawerContent={(props) => <FilterDrawer {...props} />}
-      screenOptions={({ navigation, route }) => ({
-        swipeEdgeWidth: 300,
-        headerShown: false,
-        unmountOnBlur: true,
-
-        drawerPosition: 'right',
-      })}
-    >
-      <Drawer.Screen name={ROUTES.SEARCH} component={Search} />
-    </Drawer.Navigator>
   )
 }
 

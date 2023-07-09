@@ -26,7 +26,7 @@ export const adview = async (adId) => {
 export const errorLog = (err, deviceId) => {
   return axiosInstance({
     method: 'POST',
-    url: '/devices/startup',
+    url: '/ads/startup',
     data: { type: 'ERROR', payload: err, deviceId },
   }).catch((err) => console.log('Error log not sent :', err))
 }

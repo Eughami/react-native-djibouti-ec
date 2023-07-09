@@ -35,12 +35,16 @@ function CustomDrawerContent(props) {
         {/* <DrawerItemList {...props} /> */}
         <DrawerItem
           label='Latest Ads'
-          onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
+          onPress={() => props.navigation.navigate(ROUTES.HOME_LATEST)}
         />
         <DrawerItem
           label='Popular Ads'
           // TODO.make an endpoint that gives top 20||50 ads for last week||month
-          onPress={() => props.navigation.navigate(ROUTES.HOME_CATEGORY)}
+          onPress={() =>
+            props.navigation.navigate(ROUTES.HOME_TRENDING, {
+              category: 'trending',
+            })
+          }
         />
         <View style={styles.seperatorContainer}>
           <View

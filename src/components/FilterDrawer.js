@@ -206,6 +206,7 @@ function FilterDrawer(props) {
             onPress={() => {
               setFilters({ ...filters, categories, date, min, max, adType })
               props.toggle()
+              props.setInitialRender(false)
             }}
           />
         </View>

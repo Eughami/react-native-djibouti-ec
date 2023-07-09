@@ -1,8 +1,17 @@
 import { COLORS } from '@constants/style'
 import { useTheme } from '@react-navigation/native'
 import { Pressable, StyleSheet, Text } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-function CustomButton({ text, isSelected, onPress, width = '45%' }) {
+function CustomButton({
+  text,
+  icon = null,
+  isSelected,
+  onPress,
+  width = '45%',
+  bg = null,
+  color = null,
+}) {
   const { colors } = useTheme()
   return (
     <Pressable
@@ -11,17 +20,25 @@ function CustomButton({ text, isSelected, onPress, width = '45%' }) {
         styles.dateButton,
         {
           width,
-          backgroundColor: colors.card,
+          backgroundColor: bg ?? colors.card,
           borderColor: colors.border,
           borderWidth: 1,
         },
-        isSelected && { backgroundColor: '#FFD700', borderWidth: 0 },
+        isSelected && { backgroundColor: bg ?? '#FFD700', borderWidth: 0 },
         pressed && { opacity: 0.7 },
       ]}
     >
+      {icon && (
+        <Ionicons
+          style={styles.icon}
+          size={20}
+          color={color ?? colors.text}
+          name={icon}
+        />
+      )}
       <Text
         style={[
-          { color: colors.text, fontWeight: 'bold' },
+          { color: color ?? colors.text, fontWeight: 'bold' },
           isSelected && { color: 'white' },
         ]}
       >
@@ -33,10 +50,14 @@ function CustomButton({ text, isSelected, onPress, width = '45%' }) {
 
 const styles = StyleSheet.create({
   dateButton: {
+    flexDirection: 'row',
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5,
+  },
+  icon: {
+    marginRight: 10,
   },
 })
 export default CustomButton

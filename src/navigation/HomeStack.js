@@ -9,6 +9,7 @@ import Category from '@views/Category'
 import Home from '@views/Home'
 import { Ionicons } from '@expo/vector-icons'
 import { useStore } from '@zustand/store'
+import { handleRoutetitle } from '@constants/common'
 
 const Stack = createNativeStackNavigator()
 
@@ -19,6 +20,7 @@ function HomeStack() {
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
         headerShown: true,
+        title: handleRoutetitle(routeName),
         headerStyle: { backgroundColor: COLORS.primary.color },
         headerTintColor: 'white',
         headerLeft: ({ tintColor }) => (
@@ -41,6 +43,8 @@ function HomeStack() {
       <Stack.Screen name={ROUTES.HOME} component={Home} />
       <Stack.Screen name={ROUTES.HOME_AD} component={Ad} />
       <Stack.Screen name={ROUTES.HOME_CATEGORY} component={Category} />
+      <Stack.Screen name={ROUTES.HOME_TRENDING} component={Category} />
+      <Stack.Screen name={ROUTES.HOME_LATEST} component={Category} />
       <Stack.Screen name={ROUTES.HOME_CATEGORIES} component={Categories} />
       {Object.keys(CategoryEnum).map((cat, i) => (
         <Stack.Screen

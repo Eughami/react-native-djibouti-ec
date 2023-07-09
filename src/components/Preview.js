@@ -47,8 +47,15 @@ function Preview(item) {
             </View>
           )}
           {price && (
-            <View style={styles.price}>
-              <Text style={styles.priceText}>{formatPrice(price)} FDJ</Text>
+            <View
+              style={[
+                styles.price,
+                item.small && { paddingHorizontal: 4, paddingVertical: 4 },
+              ]}
+            >
+              <Text style={[styles.priceText, item.small && { fontSize: 12 }]}>
+                {formatPrice(price)} FDJ
+              </Text>
             </View>
           )}
 

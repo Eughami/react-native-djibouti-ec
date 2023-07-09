@@ -3,12 +3,14 @@ import Loader from '@components/Loader'
 import Preview from '@components/Preview'
 import SelectedOption from '@components/SelectedOption'
 import SortOptionsModal from '@components/SortOptionModal'
+import { CategoryEnum } from '@constants/categories'
 import { sortOptions } from '@constants/common'
 import { extractRgbComponents } from '@constants/style'
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native'
 import { adsPerCategory } from '@services/category'
+import { updateFav } from '@services/home'
 import { useStore } from '@zustand/store'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   FlatList,
   LayoutAnimation,
@@ -18,9 +20,10 @@ import {
   Text,
   View,
 } from 'react-native'
-import { useQuery } from 'react-query'
+import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query'
 
 function Category() {
+  const queryClient = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
   const [hasMore, setHasMore] = useState(false)
   const [page, setPage] = useState(1)
@@ -28,7 +31,10 @@ function Category() {
   const [sort, setSort] = useState(sortOptions[0])
   const { name, params } = useRoute()
   const { colors, dark } = useTheme()
+  const [isFav, setIsFav] = useState(false)
   const navigation = useNavigation()
+  const favCat = useStore((state) => state.favCat)
+  const debounceTimeoutRef = useRef(null)
 
   const { blue, green, red } = extractRgbComponents(
     dark ? colors.border : colors.background,
@@ -40,11 +46,20 @@ function Category() {
     refetch,
   } = useQuery(
     `${name}-ads`,
-    () => adsPerCategory(page, name.split('.').pop(), sort.value),
+    () => adsPerCategory(page, params?.category, sort.value),
     {
       onSuccess: (data) => {
         setHasMore(page < data?.pageCount)
         setList((list) => [...list, ...data.data])
+      },
+    },
+  )
+
+  const { mutate: favMutation, isLoading: mutationLoading } = useMutation(
+    updateFav,
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('fav-cat')
       },
     },
   )
@@ -60,6 +75,11 @@ function Category() {
   }
 
   useEffect(() => {
+    const found = favCat?.find((c) => c.name === params?.category)
+    setIsFav(!!found)
+  }, [favCat])
+
+  useEffect(() => {
     setList([])
     if (page !== 1) {
       setPage(1)
@@ -72,6 +92,23 @@ function Category() {
     refetch()
   }, [page])
 
+  const debounceFavAction = () => {
+    if (mutationLoading) {
+      return // Ignore button press if a request is already pending
+    }
+
+    // Clear the previous timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+
+    // Set a new timeout of 1 second
+    debounceTimeoutRef.current = setTimeout(() => {
+      favMutation(params.category)
+    }, 3000)
+    setIsFav(!isFav)
+  }
+
   const loading = isFetching || isLoading
 
   const handleEndReached = () => {
@@ -81,10 +118,20 @@ function Category() {
   }
   const Headercom = () => (
     <View style={styles.sortContainer}>
+      {Object.keys(CategoryEnum).includes(params?.category) && (
+        <IconButton
+          icon={isFav ? 'notifications-outline' : 'notifications-off-outline'}
+          color={colors.text}
+          size={30}
+          onPress={debounceFavAction}
+        />
+      )}
       <View
         style={{
           backgroundColor: `rgba(${red},${green},${blue},1)`,
           borderRadius: 20,
+          borderColor: colors.border,
+          // borderWidth: 1,
           padding: 2,
         }}
       >
@@ -143,7 +190,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sortContainer: {
+    padding: 10,
+    paddingBottom: 0,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'flex-end',
   },
 })

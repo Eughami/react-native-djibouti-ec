@@ -1,7 +1,7 @@
 import axiosInstance from '@constants/axiosInstance'
 
 export const adsPerCategory = (page, category = null, sort = null) => {
-  console.log('Api called ')
+  if (category === 'trending') return trendingAds()
   let sortStr = 'createdAt,DESC'
   let categoryFilter = ''
   if (category) categoryFilter = `&filter=category.name||eq||${category}`
@@ -15,6 +15,20 @@ export const adsPerCategory = (page, category = null, sort = null) => {
       errorLog({
         ...err,
         msg: `something went wrong on category ${category} query`,
+      }),
+    )
+}
+
+export const trendingAds = () => {
+  return axiosInstance({
+    method: 'get',
+    url: `/ads/trending`,
+  })
+    .then((res) => res)
+    .catch((err) =>
+      errorLog({
+        ...err,
+        msg: `something went wrong on trending query`,
       }),
     )
 }
