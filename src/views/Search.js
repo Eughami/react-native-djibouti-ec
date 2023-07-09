@@ -5,7 +5,7 @@ import Preview from '@components/Preview'
 import SortOptionsModal from '@components/SortOptionModal'
 import { sortOptions } from '@constants/common'
 import { ROUTES } from '@constants/routes'
-import { extractRgbComponents } from '@constants/style'
+import { COLORS, extractRgbComponents } from '@constants/style'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { useTheme } from '@react-navigation/native'
 import { searchAds } from '@services/search'
@@ -19,6 +19,9 @@ import {
   View,
 } from 'react-native'
 import { useQuery } from 'react-query'
+import { Ionicons } from '@expo/vector-icons'
+import Ad from './Ad'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 const Drawer = createDrawerNavigator()
 
@@ -33,6 +36,12 @@ function Search({ navigation }) {
   const [hasMore, setHasMore] = useState(false)
   const [page, setPage] = useState(1)
   const [list, setList] = useState([])
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const toggleDrawer = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setIsDrawerOpen(!isDrawerOpen)
+  }
 
   const { blue, green, red } = extractRgbComponents(
     dark ? colors.border : colors.background,
@@ -120,7 +129,8 @@ function Search({ navigation }) {
             icon='funnel-outline'
             color={colors.text}
             size={20}
-            onPress={() => navigation.toggleDrawer()}
+            // onPress={() => navigation.toggleDrawer()}
+            onPress={() => toggleDrawer()}
             text='Filter'
           />
         </View>
@@ -180,10 +190,43 @@ function Search({ navigation }) {
         currentSelection={sort}
         handleSelection={handleOptionSelect}
       />
+      {isDrawerOpen && <FilterDrawer toggle={toggleDrawer} />}
     </View>
   )
 }
 
+const Stack = createNativeStackNavigator()
+
+function SearchStack() {
+  const routeName = useStore((state) => state.routeName)
+  return (
+    <Stack.Navigator
+      screenOptions={({ navigation, route }) => ({
+        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerTintColor: 'white',
+        headerLeft: ({ tintColor }) => (
+          <Ionicons
+            style={{ marginRight: 30 }}
+            name={
+              routeName.includes('.') ? 'arrow-back-outline' : 'menu-outline'
+            }
+            size={24}
+            color={tintColor}
+            onPress={() => {
+              routeName.includes('.')
+                ? navigation.goBack()
+                : navigation.getParent().openDrawer()
+            }}
+          />
+        ),
+      })}
+    >
+      {/* <Stack.Screen name={ROUTES.SEARCH_DRAWER} component={DrawerNav} /> */}
+      <Stack.Screen name={ROUTES.SEARCH} component={Search} />
+      <Stack.Screen name={ROUTES.HOME_AD} component={Ad} />
+    </Stack.Navigator>
+  )
+}
 function DrawerNav() {
   return (
     <Drawer.Navigator
@@ -218,4 +261,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default DrawerNav
+export default SearchStack

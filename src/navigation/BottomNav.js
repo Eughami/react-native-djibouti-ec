@@ -15,36 +15,14 @@ const BottomTab = createBottomTabNavigator()
 
 function BottomNav() {
   const routeName = useStore((state) => state.routeName)
-  const prevRouteName = useStore((state) => state.prevRouteName)
   return (
     <BottomTab.Navigator
+      // backBehavior='history'
       screenOptions={({ route, navigation }) => ({
-        headerStyle: { backgroundColor: COLORS.primary.color },
-        headerTintColor: 'white',
-        headerTitle: handleRoutetitle(routeName),
+        headerShown: false,
         tabBarActiveTintColor: COLORS.primary.light400,
         tabBarHideOnKeyboard: true,
         tabBarStyle: routeName.includes('.') && { display: 'none' },
-        headerLeft: ({ tintColor }) => (
-          <IconButton
-            icon={
-              routeName.includes('.') ? 'arrow-back-outline' : 'menu-outline'
-            }
-            size={24}
-            color={tintColor}
-            onPress={() => {
-              routeName.includes('.')
-                ? navigation.dispatch(
-                    CommonActions.navigate({
-                      name: prevRouteName,
-                      // TODO.future handle usecase where params will be needed
-                      params: {},
-                    }),
-                  )
-                : navigation.toggleDrawer()
-            }}
-          />
-        ),
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
 

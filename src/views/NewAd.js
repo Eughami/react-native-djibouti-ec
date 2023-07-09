@@ -21,6 +21,10 @@ import { CategoryEnum } from '@constants/categories'
 import Progressoverlay from '@components/ProgressOverlay'
 import axiosInstance from '@constants/axiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ROUTES } from '@constants/routes'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { useStore } from '@zustand/store'
+import { Ionicons } from '@expo/vector-icons'
 
 function NewAd() {
   const { colors, dark } = useTheme()
@@ -748,6 +752,37 @@ function NewAd() {
   )
 }
 
+const Stack = createNativeStackNavigator()
+
+function NewStack() {
+  const routeName = useStore((state) => state.routeName)
+  return (
+    <Stack.Navigator
+      screenOptions={({ navigation, route }) => ({
+        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerTintColor: 'white',
+        headerLeft: ({ tintColor }) => (
+          <Ionicons
+            style={{ marginRight: 30 }}
+            name={
+              routeName.includes('.') ? 'arrow-back-outline' : 'menu-outline'
+            }
+            size={24}
+            color={tintColor}
+            onPress={() => {
+              routeName.includes('.')
+                ? navigation.goBack()
+                : navigation.getParent().openDrawer()
+            }}
+          />
+        ),
+      })}
+    >
+      <Stack.Screen name={ROUTES.NEW_AD_STACK} component={NewAd} />
+    </Stack.Navigator>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {},
   button: {
@@ -765,4 +800,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default NewAd
+export default NewStack

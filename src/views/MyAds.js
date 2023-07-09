@@ -1,7 +1,7 @@
 import IconButton from '@components/IconButton'
 import Loader from '@components/Loader'
 import { ROUTES } from '@constants/routes'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useTheme } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { deleteAd, getMyAds } from '@services/home'
 import React, { useEffect, useState } from 'react'
@@ -12,19 +12,29 @@ import {
   TouchableHighlight,
   View,
   ToastAndroid,
+  Image,
 } from 'react-native'
 
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useMutation, useQuery } from 'react-query'
 import Ad from './Ad'
+import { API_BASE_URL } from '@constants/api'
+import { COLORS, extractRgbComponents } from '@constants/style'
+import { Ionicons } from '@expo/vector-icons'
+import { useStore } from '@zustand/store'
 
 function MyProfile() {
+  const { dark, colors } = useTheme()
   const { navigate } = useNavigation()
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
       rowMap[rowKey].closeRow()
     }
   }
+
+  const { blue, green, red } = extractRgbComponents(
+    dark ? colors.border : colors.background,
+  )
 
   const {
     isLoading,
@@ -58,20 +68,56 @@ function MyProfile() {
     console.log('This row opened', rowKey)
   }
 
+  // TODO. make forground/background the same as newad page
   const renderItem = (data) => (
     <TouchableHighlight
       onPress={() => navigate(ROUTES.HOME_AD, { id: data.item.id })}
-      style={styles.rowFront}
       underlayColor={'#AAA'}
     >
-      <View>
-        <Text>{data.item.title}</Text>
+      <View
+        style={[
+          styles.itemContainer,
+          { backgroundColor: `rgba(${red},${green},${blue},1)` },
+        ]}
+      >
+        <Image
+          style={{
+            marginHorizontal: 10,
+            width: 70,
+            height: 70,
+            resizeMode: 'contain',
+          }}
+          source={{
+            // uri: `${API_BASE_URL}/files/${data.item.attachment?.[0]?.path}`,
+            uri: `https://media.istockphoto.com/id/1146517111/photo/taj-mahal-mausoleum-in-agra.jpg?s=612x612&w=0&k=20&c=vcIjhwUrNyjoKbGbAQ5sOcEzDUgOfCsm9ySmJ8gNeRk=`,
+          }}
+        />
+        <View
+          style={{
+            flex: 1,
+            marginRight: 10,
+            // borderColor: 'red',
+            justifyContent: 'space-around',
+            // borderWidth: 1,
+            height: 60,
+          }}
+        >
+          <Text
+            numberOfLines={1}
+            style={{ color: colors.text, fontWeight: 'bold', fontSize: 16 }}
+          >
+            {data.item.title}
+          </Text>
+          <Text numberOfLines={1} style={{ color: colors.text }}>
+            {data.item.description}
+          </Text>
+        </View>
       </View>
     </TouchableHighlight>
   )
 
   const renderHiddenItem = (data, rowMap) => (
-    <View style={styles.rowBack}>
+    <View style={[styles.rowBack, {}]}>
       <IconButton
         color='red'
         icon='trash-outline'
@@ -91,38 +137,58 @@ function MyProfile() {
   if (loading) return <Loader />
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>My ads</Text>
-
-      <SwipeListView
-        data={ads.data}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>You have not posted any ads</Text>
-        }
-        disableRightSwipe
-        rightOpenValue={-50}
-        previewRowKey={ads.data?.[0]?.id}
-        previewOpenValue={-50}
-        previewOpenDelay={3000}
-        previewDuration={2000}
-        onRowDidOpen={onRowDidOpen}
-        swipeRowStyle={styles.swipedStyle}
-        ItemSeparatorComponent={<View style={{ height: 10 }}></View>}
-      />
-    </View>
+    <SwipeListView
+      style={{
+        flex: 1,
+        padding: 10,
+        backgroundColor: colors.card,
+      }}
+      data={ads.data}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+      renderHiddenItem={renderHiddenItem}
+      ListEmptyComponent={
+        <Text style={styles.emptyText}>You have not posted any ads</Text>
+      }
+      disableRightSwipe
+      rightOpenValue={-50}
+      previewRowKey={ads.data?.[0]?.id}
+      previewOpenValue={-50}
+      previewOpenDelay={3000}
+      previewDuration={2000}
+      onRowDidOpen={onRowDidOpen}
+      swipeRowStyle={styles.swipedStyle}
+      ItemSeparatorComponent={<View style={{ height: 15 }}></View>}
+    />
   )
 }
 
 const Stack = createNativeStackNavigator()
 
 function ProfileStack() {
+  const routeName = useStore((state) => state.routeName)
+
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerShown: false,
+        headerShown: true,
+        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerTintColor: 'white',
+        headerLeft: ({ tintColor }) => (
+          <Ionicons
+            style={{ marginRight: 30 }}
+            name={
+              routeName.includes('.') ? 'arrow-back-outline' : 'menu-outline'
+            }
+            size={24}
+            color={tintColor}
+            onPress={() => {
+              routeName.includes('.')
+                ? navigation.goBack()
+                : navigation.toggleDrawer()
+            }}
+          />
+        ),
       })}
     >
       <Stack.Screen name={ROUTES.MY_ADS} component={MyProfile} />
@@ -135,41 +201,32 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
-    padding: 10,
-  },
-  title: {
-    color: 'orange',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginVertical: 10,
   },
   emptyText: {
     marginTop: 30,
     textAlign: 'center',
   },
-  rowFront: {
-    borderRadius: 20,
-    alignItems: 'center',
-    backgroundColor: '#c2bfbf',
-    justifyContent: 'center',
-    height: 50,
-    overflow: 'hidden',
-  },
+  rowFront: {},
   rowBack: {
     borderRadius: 20,
     alignItems: 'center',
-    backgroundColor: '#DDD',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingLeft: 15,
-  },
-  backRightBtnRight: {
-    backgroundColor: 'red',
-    right: 0,
+    height: 80,
   },
   swipedStyle: {
+    height: 80,
     borderRadius: 20,
+    overflow: 'hidden',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderRadius: 20,
+    height: 80,
     overflow: 'hidden',
   },
 })

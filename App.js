@@ -145,7 +145,6 @@ export default function App() {
   const _navigationRefRoot = useRef()
 
   const setRouteName = useStore((state) => state.setRouteName)
-  const setPrevRouteName = useStore((state) => state.setPrevRouteName)
 
   if (!appIsReady) {
     return null
@@ -180,7 +179,6 @@ export default function App() {
               })
               // Hide default bottom Tab header for all the nested stack navigator
               setRouteName(currentRouteName)
-              setPrevRouteName(previousRouteName)
             }
 
             _routeNameRef.current = currentRouteName

@@ -1,18 +1,41 @@
+import IconButton from '@components/IconButton'
 import { CategoryEnum } from '@constants/categories'
 import { ROUTES } from '@constants/routes'
+import { COLORS } from '@constants/style'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Ad from '@views/Ad'
 import Categories from '@views/Categories'
 import Category from '@views/Category'
 import Home from '@views/Home'
+import { Ionicons } from '@expo/vector-icons'
+import { useStore } from '@zustand/store'
 
 const Stack = createNativeStackNavigator()
 
 function HomeStack() {
+  const routeName = useStore((state) => state.routeName)
+
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerShown: false,
+        headerShown: true,
+        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerTintColor: 'white',
+        headerLeft: ({ tintColor }) => (
+          <Ionicons
+            style={{ marginRight: 30 }}
+            name={
+              routeName.includes('.') ? 'arrow-back-outline' : 'menu-outline'
+            }
+            size={24}
+            color={tintColor}
+            onPress={() => {
+              routeName.includes('.')
+                ? navigation.goBack()
+                : navigation.toggleDrawer()
+            }}
+          />
+        ),
       })}
     >
       <Stack.Screen name={ROUTES.HOME} component={Home} />
