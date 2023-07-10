@@ -1,5 +1,6 @@
 import { useTheme } from '@react-navigation/native'
 import {
+  BackHandler,
   Button,
   Pressable,
   ScrollView,
@@ -10,7 +11,7 @@ import {
 } from 'react-native'
 import FormLabel from './FormLabel'
 import DropDownPicker from 'react-native-dropdown-picker'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CategoryEnum } from '@constants/categories'
 import IconButton from './IconButton'
 import { DateOptions } from '@constants/common'
@@ -26,6 +27,23 @@ function FilterDrawer(props) {
   const [adType, setAdType] = useState(filters.adType)
   const [categories, setCategories] = useState(filters.categories)
   const [date, setDate] = useState(filters.date)
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (props.isDrawerOpen) {
+        props.toggle()
+        return true // Prevent default back button behavior
+      }
+      return false // Allow default back button behavior
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () => {
+      console.log('Removed from the screen')
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    }
+  }, [props.isDrawerOpen])
 
   function toggleType(bool) {
     setAdType(bool)
@@ -47,6 +65,7 @@ function FilterDrawer(props) {
           flex: 7,
           backgroundColor: colors.card,
           borderWidth: 1,
+          borderBottomWidth: 0,
           borderColor: colors.border,
         }}
       >

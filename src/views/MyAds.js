@@ -87,10 +87,15 @@ function MyProfile() {
             height: 70,
             resizeMode: 'contain',
           }}
-          source={{
-            // uri: `${API_BASE_URL}/files/${data.item.attachment?.[0]?.path}`,
-            uri: `https://media.istockphoto.com/id/1146517111/photo/taj-mahal-mausoleum-in-agra.jpg?s=612x612&w=0&k=20&c=vcIjhwUrNyjoKbGbAQ5sOcEzDUgOfCsm9ySmJ8gNeRk=`,
-          }}
+          source={
+            data.item?.attachment.find((at) => at?.position === 0)?.path
+              ? {
+                  uri: `${API_BASE_URL}/files/${
+                    data.item.attachment.find((at) => at.position === 0).path
+                  }`,
+                }
+              : require('@assets/default.jpg')
+          }
         />
         <View
           style={{
@@ -155,7 +160,7 @@ function MyProfile() {
       previewRowKey={ads.data?.[0]?.id}
       previewOpenValue={-50}
       previewOpenDelay={3000}
-      previewDuration={2000}
+      previewDuration={1000}
       onRowDidOpen={onRowDidOpen}
       swipeRowStyle={styles.swipedStyle}
       ItemSeparatorComponent={<View style={{ height: 15 }}></View>}

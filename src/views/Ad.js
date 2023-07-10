@@ -8,6 +8,7 @@ import { ResizeMode, Video } from 'expo-av'
 import { useRef, useState } from 'react'
 import {
   Dimensions,
+  Image,
   Linking,
   ScrollView,
   StyleSheet,
@@ -38,7 +39,7 @@ function Ad() {
     isFetching,
     data: ad,
   } = useQuery(`ads-${params?.id}`, () => getProduct(params?.id), {
-    onSuccess: (data) => adview(data.id),
+    onSuccess: (data) => adview([data.id]),
   })
   const loading = isFetching || isLoading
   if (loading) return <Loader />
@@ -46,51 +47,72 @@ function Ad() {
     <>
       <ScrollView style={styles.container}>
         <Text style={styles.title}>{ad.title}</Text>
-        <Carousel
-          ref={carouselRef}
-          width={width - 20}
-          height={height * 0.5}
-          data={ad.attachment}
-          enabled={ad?.attachment?.length > 1}
-          scrollAnimationDuration={800}
-          style={{
-            borderWidth: 1,
-            borderColor: colors.border,
-          }}
-          onScrollEnd={(i) => setIndex(i)}
-          renderItem={({ index }) => (
-            <View
+        {!ad?.attachment?.length ? (
+          <View
+            style={{
+              width: width - 20,
+              height: height * 0.5,
+              borderWidth: 1,
+              borderColor: colors.border,
+            }}
+          >
+            <Image
               style={{
-                flex: 1,
-                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+                resizeMode: 'cover',
               }}
-            >
-              {ad.attachment[index].path.startsWith('images') ? (
-                <ImageZoom
-                  uri={`${API_BASE_URL}/files/${ad.attachment[index].path}`}
-                  loadingIndicatorSource={<Loader />}
-                />
-              ) : (
-                <Video
-                  ref={video}
-                  // isMuted
-                  style={{
-                    margin: 10,
-                    width: '100%',
-                    height: '100%',
-                    // borderColor: colors.border,
-                    // borderWidth: 1,
-                  }}
-                  source={{
-                    uri: `${API_BASE_URL}/files/${ad.attachment[index].path}`,
-                  }}
-                  useNativeControls
-                  resizeMode={ResizeMode.CONTAIN}
-                />
-              )}
-            </View>
-          )}
-        />
+              source={require('@assets/default.jpg')}
+            />
+          </View>
+        ) : (
+          <Carousel
+            ref={carouselRef}
+            width={width - 20}
+            height={height * 0.5}
+            data={ad.attachment}
+            enabled={ad?.attachment?.length > 1}
+            scrollAnimationDuration={800}
+            style={{
+              borderWidth: 1,
+              borderColor: colors.border,
+            }}
+            onScrollEnd={(i) => setIndex(i)}
+            renderItem={({ index }) => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                }}
+              >
+                {ad.attachment[index].path.startsWith('images') ? (
+                  <ImageZoom
+                    uri={`${API_BASE_URL}/files/${ad.attachment[index].path}`}
+                    loadingIndicatorSource={<Loader />}
+                  />
+                ) : (
+                  <Video
+                    ref={video}
+                    // isMuted
+                    style={{
+                      margin: 10,
+                      width: '100%',
+                      height: '100%',
+                      // borderColor: colors.border,
+                      // borderWidth: 1,
+                    }}
+                    source={{
+                      uri: `${API_BASE_URL}/files/${ad.attachment[index].path}`,
+                    }}
+                    useNativeControls
+                    resizeMode={ResizeMode.CONTAIN}
+                  />
+                )}
+              </View>
+            )}
+          />
+        )}
+
         <View style={styles.pagination}>
           {ad?.attachment?.length > 1 && (
             <>
@@ -126,7 +148,14 @@ function Ad() {
           </View>
         </View>
       </ScrollView>
-      <View style={{ flexDirection: 'row', position: 'absolute', bottom: 0 }}>
+      <View
+        style={{
+          height: 40,
+          flexDirection: 'row',
+          position: 'absolute',
+          bottom: 5,
+        }}
+      >
         <CustomButton
           width={'50%'}
           text='CALL'
@@ -158,6 +187,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: 'red',
     // borderWidth: 1,
+    marginBottom: 40,
   },
   title: {
     paddingVertical: 10,
@@ -176,7 +206,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 30,
   },
   priceText: {
     fontSize: 20,

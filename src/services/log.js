@@ -12,14 +12,16 @@ export const postLogs = async (data) => {
   }).catch((err) => errorLog(err, deviceId))
 }
 
-export const adview = async (adId) => {
+export const adview = async (adIds = []) => {
   const deviceId = await AsyncStorage.getItem('deviceId')
   if (!deviceId) return
 
+  const body = adIds.map((ad) => ({ adId: ad, deviceId }))
+
   return axiosInstance({
     method: 'POST',
-    url: '/devices/view',
-    data: { adId, deviceId },
+    url: '/devices/view/bulk',
+    data: { bulk: body },
   }).catch((err) => errorLog(err, deviceId))
 }
 

@@ -9,8 +9,11 @@ import { COLORS, extractRgbComponents } from '@constants/style'
 import { useTheme } from '@react-navigation/native'
 import { searchAds } from '@services/search'
 import { useStore } from '@zustand/store'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
+  Animated,
+  BackHandler,
+  Dimensions,
   FlatList,
   LayoutAnimation,
   StyleSheet,
@@ -25,6 +28,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { trendingAds } from '@services/category'
 
 function Search({ navigation }) {
+  const width = Dimensions.get('window').width
+
   const { colors, dark } = useTheme()
   const filters = useStore((state) => state.filters)
   const setFilters = useStore((state) => state.setFilters)
@@ -36,11 +41,35 @@ function Search({ navigation }) {
   const [page, setPage] = useState(1)
   const [list, setList] = useState([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const drawerAnimation = useRef(new Animated.Value(0)).current
 
   const toggleDrawer = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setIsDrawerOpen(!isDrawerOpen)
+    if (isDrawerOpen) {
+      setTimeout(() => {
+        // Close the drawer
+        Animated.timing(drawerAnimation, {
+          toValue: 0,
+          duration: 300, // Adjust the animation duration as needed
+          useNativeDriver: true,
+        }).start(() => setIsDrawerOpen(false))
+      }, 100)
+    } else {
+      setTimeout(() => {
+        // Open the drawer
+        setIsDrawerOpen(true)
+        Animated.timing(drawerAnimation, {
+          toValue: 1,
+          duration: 300, // Adjust the animation duration as needed
+          useNativeDriver: true,
+        }).start()
+      }, 100)
+    }
   }
+
+  const drawerTranslateX = drawerAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [width, 0], // Adjust the desired width of the drawer
+  })
 
   const { blue, green, red } = extractRgbComponents(
     dark ? colors.border : colors.background,
@@ -212,10 +241,27 @@ function Search({ navigation }) {
         handleSelection={handleOptionSelect}
       />
       {isDrawerOpen && (
-        <FilterDrawer
-          toggle={toggleDrawer}
-          setInitialRender={setInitialRender}
-        />
+        <Animated.View
+          style={[
+            {
+              flex: 1,
+              flexDirection: 'row',
+              width: '100%',
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+            },
+            { transform: [{ translateX: drawerTranslateX }] },
+          ]}
+        >
+          <FilterDrawer
+            toggle={toggleDrawer}
+            isDrawerOpen={isDrawerOpen}
+            translateX={drawerTranslateX}
+            setInitialRender={setInitialRender}
+          />
+        </Animated.View>
       )}
     </View>
   )
@@ -247,7 +293,6 @@ function SearchStack() {
         ),
       })}
     >
-      {/* <Stack.Screen name={ROUTES.SEARCH_DRAWER} component={DrawerNav} /> */}
       <Stack.Screen name={ROUTES.SEARCH} component={Search} />
       <Stack.Screen name={ROUTES.HOME_AD} component={Ad} />
     </Stack.Navigator>

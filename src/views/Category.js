@@ -9,6 +9,7 @@ import { extractRgbComponents } from '@constants/style'
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native'
 import { adsPerCategory } from '@services/category'
 import { updateFav } from '@services/home'
+import { adview } from '@services/log'
 import { useStore } from '@zustand/store'
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -35,6 +36,9 @@ function Category() {
   const navigation = useNavigation()
   const favCat = useStore((state) => state.favCat)
   const debounceTimeoutRef = useRef(null)
+  const flatListRef = useRef(null)
+  const viewDurationRef = useRef(null)
+  const viewPerAd = useRef([])
 
   const { blue, green, red } = extractRgbComponents(
     dark ? colors.border : colors.background,
@@ -77,6 +81,11 @@ function Category() {
   useEffect(() => {
     const found = favCat?.find((c) => c.name === params?.category)
     setIsFav(!!found)
+
+    return () => {
+      // Save the views here
+      adview(viewPerAd.current)
+    }
   }, [favCat])
 
   useEffect(() => {
@@ -116,6 +125,26 @@ function Category() {
       setPage(page + 1)
     }
   }
+
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    if (!viewableItems.length) return
+
+    if (!viewDurationRef.current) {
+      viewDurationRef.current = performance.now()
+      return
+    }
+
+    // here calculate time since last change
+    const changeDuration = performance.now() - viewDurationRef.current
+    // reset the timer
+    viewDurationRef.current = performance.now()
+    if (changeDuration < 3000) return
+
+    const middleItems = viewableItems.slice(1, -1)
+    const keys = middleItems.map((c) => c.key)
+    viewPerAd.current = [...new Set([...viewPerAd.current, ...keys])]
+  }).current
+
   const Headercom = () => (
     <View style={styles.sortContainer}>
       {Object.keys(CategoryEnum).includes(params?.category) && (
@@ -152,6 +181,7 @@ function Category() {
           <Loader />
         ) : (
           <FlatList
+            ref={flatListRef}
             style={{ flex: 1, width: '100%' }}
             data={list}
             renderItem={(itemData) => <Preview {...itemData.item} />}
@@ -159,6 +189,7 @@ function Category() {
             ListFooterComponent={hasMore || loading ? Loader : null}
             onEndReached={handleEndReached}
             onEndReachedThreshold={0.5}
+            onViewableItemsChanged={onViewableItemsChanged}
             ListHeaderComponent={Headercom}
             ListEmptyComponent={
               <View

@@ -3,9 +3,9 @@ import { ROUTES } from '@constants/routes'
 import { COLORS } from '@constants/style'
 import { useStore } from '@zustand/store'
 import { Ionicons } from '@expo/vector-icons'
-import Search from '@views/Search'
-import NewAd from '@views/NewAd'
-import MyAds from '@views/MyAds'
+import SearchStack from '@views/Search'
+import NewAdStack from '@views/NewAd'
+import MyAdsStack from '@views/MyAds'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeStack from './HomeStack'
 
@@ -39,9 +39,9 @@ function BottomNav() {
       })}
     >
       <BottomTab.Screen name={ROUTES.HOME_STACK} component={HomeStack} />
-      <BottomTab.Screen name={ROUTES.SEARCH_STACK} component={Search} />
-      <BottomTab.Screen name={ROUTES.NEW_AD} component={NewAd} />
-      <BottomTab.Screen name={ROUTES.PROFILE_STACK} component={MyAds} />
+      <BottomTab.Screen name={ROUTES.SEARCH_STACK} component={SearchStack} />
+      <BottomTab.Screen name={ROUTES.NEW_AD} component={NewAdStack} />
+      <BottomTab.Screen name={ROUTES.PROFILE_STACK} component={MyAdsStack} />
     </BottomTab.Navigator>
   )
 }
