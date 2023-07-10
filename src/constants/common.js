@@ -23,3 +23,42 @@ export const sortOptions = [
 ]
 
 export const DateOptions = ['today', 'This week', 'This month', 'All']
+
+const monthListEN = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+
+const monthListFR = [
+  'Janvier',
+  'Février',
+  'Mars',
+  'Avril',
+  'Mai',
+  'Juin',
+  'Juillet',
+  'Août',
+  'Septembre',
+  'Octobre',
+  'Novembre',
+  'Décembre',
+]
+export const formatDate = (date, en = true) => {
+  const dd = new Date(date)
+  const day = dd.getDate()
+  const month = dd.getMonth()
+
+  return `${day} ${
+    en ? monthListEN[month] : monthListFR[month]
+  } ${dd.getFullYear()}`
+}

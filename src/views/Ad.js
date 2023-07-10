@@ -19,6 +19,8 @@ import Carousel from 'react-native-reanimated-carousel'
 import { useQuery } from 'react-query'
 import { Ionicons } from '@expo/vector-icons'
 import { adview } from '@services/log'
+import { COLORS } from '@constants/style'
+import { formatDate } from '@constants/common'
 
 function Ad() {
   const { dark, colors } = useTheme()
@@ -132,16 +134,20 @@ function Ad() {
           )}
         </View>
 
-        <Text style={styles.description}>{ad.description}</Text>
+        <Text style={[styles.description, { color: colors.text }]}>
+          {ad.description}
+        </Text>
         <View style={styles.priceContainer}>
           <Text style={styles.priceText}>
             {parseInt(ad.price).toLocaleString('en-US')} FDJ
           </Text>
           <View style={styles.detailsContainer}>
-            <Text style={styles.dateText}>02 Fevrier 2023</Text>
+            <Text style={[styles.dateText, { color: colors.text }]}>
+              {formatDate(ad.createdAt)}
+            </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name='eye' size={12} />
-              <Text style={styles.viewsText}>
+              <Ionicons name='eye' size={12} color={colors.text} />
+              <Text style={[styles.viewsText, { color: colors.text }]}>
                 {parseInt(ad.count).toLocaleString('en-US')}
               </Text>
             </View>
@@ -192,7 +198,7 @@ const styles = StyleSheet.create({
   title: {
     paddingVertical: 10,
     fontSize: 24,
-    color: 'orange',
+    color: COLORS.primary.color,
   },
   pagination: {
     flexDirection: 'row',
@@ -205,14 +211,14 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'baseline',
     marginTop: 10,
     marginBottom: 30,
   },
   priceText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'orange',
+    color: COLORS.primary.color,
   },
   detailsContainer: {
     flexDirection: 'row',
