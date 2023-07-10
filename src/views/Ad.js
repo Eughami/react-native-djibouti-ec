@@ -33,7 +33,7 @@ function Ad() {
   const video = useRef(null)
 
   const [index, setIndex] = useState(0)
-
+  console.log({ width })
   // TODO. Add a view with device details (on mount ??????--on scroll--?????)
 
   const {
@@ -52,7 +52,7 @@ function Ad() {
         {!ad?.attachment?.length ? (
           <View
             style={{
-              width: width - 20,
+              width: width > 500 ? 480 : width - 20,
               height: height * 0.5,
               borderWidth: 1,
               borderColor: colors.border,
@@ -70,7 +70,7 @@ function Ad() {
         ) : (
           <Carousel
             ref={carouselRef}
-            width={width - 20}
+            width={width > 500 ? 480 : width - 20}
             height={height * 0.5}
             data={ad.attachment}
             enabled={ad?.attachment?.length > 1}

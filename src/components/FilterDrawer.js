@@ -2,6 +2,7 @@ import { useTheme } from '@react-navigation/native'
 import {
   BackHandler,
   Button,
+  Dimensions,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -19,6 +20,7 @@ import CustomButton from './CustomButton'
 import { useStore } from '@zustand/store'
 
 function FilterDrawer(props) {
+  const height = Dimensions.get('window').height
   const filters = useStore((state) => state.filters)
   const setFilters = useStore((state) => state.setFilters)
   const { colors, dark } = useTheme()
@@ -100,12 +102,12 @@ function FilterDrawer(props) {
               fontSize: 16,
             }}
             containerStyle={{
-              height: 300,
+              height: height * 0.4,
             }}
             showArrowIcon={false}
             dropDownContainerStyle={{
-              maxHeight: 350,
-              height: 250,
+              maxHeight: height * 0.4 + 50,
+              height: height * 0.4 - 50,
               borderColor: colors.border,
               backgroundColor: dark ? '#2b2e3dff' : colors.background,
               borderLeftWidth: 0,
