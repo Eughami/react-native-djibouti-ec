@@ -5,7 +5,7 @@ import {
   NavigationContainer,
 } from '@react-navigation/native'
 import { StatusBar } from 'expo-status-bar'
-import { Appearance, Dimensions, Platform, UIManager, View } from 'react-native'
+import { Appearance, Platform, UIManager, View } from 'react-native'
 import { useStore } from '@zustand/store'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import DrawerNav from '@navigation/DrawerNav'
@@ -65,7 +65,6 @@ async function registerForPushNotificationsAsync() {
 }
 
 export default function App() {
-  const width = Dimensions.get('window').width
   const [appIsReady, setAppIsReady] = useState(false)
   const theme = useStore((state) => state.theme)
   const swithTheme = useStore((state) => state.swithTheme)
@@ -85,7 +84,7 @@ export default function App() {
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(
           'NotificationResponseReceivedListener ',
-          JSON.stringify(response)
+          JSON.stringify(response),
         )
       })
 
@@ -152,56 +151,42 @@ export default function App() {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'black',
-      }}
-      onLayout={onLayoutRootView}
-    >
-      <View
-        style={{
-          flex: 1,
-          marginLeft: width > 500 ? (width - 500) / 2 : 0,
-          maxWidth: 500,
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
-          <StatusBar style='auto' translucent={true} />
-          <NavigationContainer
-            theme={theme === 'dark' ? DarkTheme : DefaultTheme}
-            ref={_navigationRefRoot}
-            onReady={() => {
-              if (_navigationRefRoot?.current?.getCurrentRoute) {
-                _routeNameRef.current =
-                  _navigationRefRoot.current.getCurrentRoute().name
-                setRouteName(_routeNameRef.current)
-              }
-            }}
-            onStateChange={({}) => {
-              const previousRouteName = _routeNameRef.current
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style='auto' translucent={true} />
+        <NavigationContainer
+          theme={theme === 'dark' ? DarkTheme : DefaultTheme}
+          ref={_navigationRefRoot}
+          onReady={() => {
+            if (_navigationRefRoot?.current?.getCurrentRoute) {
+              _routeNameRef.current =
+                _navigationRefRoot.current.getCurrentRoute().name
+              setRouteName(_routeNameRef.current)
+            }
+          }}
+          onStateChange={({}) => {
+            const previousRouteName = _routeNameRef.current
 
-              let currentRouteName = ''
-              if (_navigationRefRoot?.current?.getCurrentRoute) {
-                currentRouteName =
-                  _navigationRefRoot.current.getCurrentRoute().name
-              }
-              if (previousRouteName !== currentRouteName) {
-                postLogs({
-                  type: 'PAGE_VISIT',
-                  payload: currentRouteName,
-                })
-                // Hide default bottom Tab header for all the nested stack navigator
-                setRouteName(currentRouteName)
-              }
+            let currentRouteName = ''
+            if (_navigationRefRoot?.current?.getCurrentRoute) {
+              currentRouteName =
+                _navigationRefRoot.current.getCurrentRoute().name
+            }
+            if (previousRouteName !== currentRouteName) {
+              postLogs({
+                type: 'PAGE_VISIT',
+                payload: currentRouteName,
+              })
+              // Hide default bottom Tab header for all the nested stack navigator
+              setRouteName(currentRouteName)
+            }
 
-              _routeNameRef.current = currentRouteName
-            }}
-          >
-            <DrawerNav />
-          </NavigationContainer>
-        </QueryClientProvider>
-      </View>
+            _routeNameRef.current = currentRouteName
+          }}
+        >
+          <DrawerNav />
+        </NavigationContainer>
+      </QueryClientProvider>
     </View>
   )
 }

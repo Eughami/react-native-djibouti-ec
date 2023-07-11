@@ -83,8 +83,8 @@ function MyProfile() {
         <Image
           style={{
             marginHorizontal: 10,
-            width: 70,
-            height: 70,
+            width: 80,
+            height: 80,
             resizeMode: 'contain',
           }}
           source={
@@ -104,7 +104,7 @@ function MyProfile() {
             // borderColor: 'red',
             justifyContent: 'space-around',
             // borderWidth: 1,
-            height: 60,
+            height: 70,
           }}
         >
           <Text
@@ -219,10 +219,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingLeft: 15,
-    height: 80,
+    height: 100,
   },
   swipedStyle: {
-    height: 80,
+    height: 100,
     borderRadius: 20,
     overflow: 'hidden',
   },
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     borderRadius: 20,
-    height: 80,
+    height: 100,
     overflow: 'hidden',
   },
 })

@@ -1,18 +1,18 @@
-import { useNavigation, useTheme } from '@react-navigation/native';
-import { Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { ROUTES } from '@constants/routes';
+import { useNavigation, useTheme } from '@react-navigation/native'
+import { Text, View } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { ROUTES } from '@constants/routes'
 
 function Avatar({ icon, title }) {
-  const { colors } = useTheme();
-  const { navigate } = useNavigation();
+  const { colors } = useTheme()
+  const { navigate } = useNavigation()
   return (
     <View
       style={{
-        width: '20%',
+        width: '30%',
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 20,
+        marginVertical: 5,
       }}
     >
       <View
@@ -30,7 +30,7 @@ function Avatar({ icon, title }) {
         <Ionicons
           name={icon}
           size={35}
-          color="white"
+          color='white'
           onPress={() =>
             navigate(`${ROUTES.HOME_CATEGORY}.${title}`, { category: title })
           }
@@ -46,7 +46,7 @@ function Avatar({ icon, title }) {
         {title}
       </Text>
     </View>
-  );
+  )
 }
 
-export default Avatar;
+export default Avatar
