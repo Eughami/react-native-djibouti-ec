@@ -17,6 +17,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import axiosInstance from '@constants/axiosInstance'
 import { errorLog, postLogs } from '@services/log'
 
+// username test
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
 
