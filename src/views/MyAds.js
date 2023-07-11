@@ -149,7 +149,9 @@ function MyProfile() {
       renderItem={renderItem}
       renderHiddenItem={renderHiddenItem}
       ListEmptyComponent={
-        <Text style={styles.emptyText}>You have not posted any ads</Text>
+        <Text style={[styles.emptyText, { color: colors.text }]}>
+          You have not posted any ads
+        </Text>
       }
       disableRightSwipe
       rightOpenValue={-50}
