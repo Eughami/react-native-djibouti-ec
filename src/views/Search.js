@@ -52,7 +52,7 @@ function Search({ navigation }) {
           duration: 300, // Adjust the animation duration as needed
           useNativeDriver: true,
         }).start(() => setIsDrawerOpen(false))
-      }, 100)
+      }, 0)
     } else {
       setTimeout(() => {
         // Open the drawer
@@ -62,7 +62,7 @@ function Search({ navigation }) {
           duration: 300, // Adjust the animation duration as needed
           useNativeDriver: true,
         }).start()
-      }, 100)
+      }, 0)
     }
   }
 

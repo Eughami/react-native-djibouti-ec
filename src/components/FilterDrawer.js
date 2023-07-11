@@ -65,6 +65,7 @@ function FilterDrawer(props) {
       <View
         style={{
           flex: 7,
+          maxWidth: 300,
           backgroundColor: colors.card,
           borderWidth: 1,
           borderBottomWidth: 0,
