@@ -12,7 +12,7 @@ function CustomButton({
   bg = null,
   color = null,
 }) {
-  const { colors } = useTheme()
+  const { dark, colors } = useTheme()
   return (
     <Pressable
       onPress={onPress}
@@ -24,7 +24,10 @@ function CustomButton({
           borderColor: colors.border,
           borderWidth: 1,
         },
-        isSelected && { backgroundColor: bg ?? '#FFD700', borderWidth: 0 },
+        isSelected && {
+          backgroundColor: bg ?? COLORS[dark ? 'dark' : 'light'].secondary,
+          borderWidth: 0,
+        },
         pressed && { opacity: 0.7 },
       ]}
     >

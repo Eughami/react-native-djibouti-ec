@@ -1,11 +1,9 @@
 import IconButton from '@components/IconButton'
 import Loader from '@components/Loader'
 import Preview from '@components/Preview'
-import SelectedOption from '@components/SelectedOption'
 import SortOptionsModal from '@components/SortOptionModal'
 import { CategoryEnum } from '@constants/categories'
 import { sortOptions } from '@constants/common'
-import { extractRgbComponents } from '@constants/style'
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native'
 import { adsPerCategory } from '@services/category'
 import { updateFav } from '@services/home'
@@ -16,8 +14,6 @@ import {
   Dimensions,
   FlatList,
   LayoutAnimation,
-  Modal,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -42,9 +38,6 @@ function Category() {
   const viewPerAd = useRef([])
   const width = Dimensions.get('window').width
 
-  const { blue, green, red } = extractRgbComponents(
-    dark ? colors.border : colors.background,
-  )
   const {
     isLoading,
     isFetching,
@@ -159,7 +152,7 @@ function Category() {
       )}
       <View
         style={{
-          backgroundColor: `rgba(${red},${green},${blue},1)`,
+          backgroundColor: dark ? colors.border : colors.background,
           borderRadius: 20,
           borderColor: colors.border,
           // borderWidth: 1,

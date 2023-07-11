@@ -15,13 +15,14 @@ const Stack = createNativeStackNavigator()
 
 function HomeStack() {
   const routeName = useStore((state) => state.routeName)
+  const theme = useStore((state) => state.theme)
 
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
         headerShown: true,
         title: handleRoutetitle(routeName),
-        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerStyle: { backgroundColor: COLORS[theme].dominant },
         headerTintColor: 'white',
         headerLeft: ({ tintColor }) => (
           <Ionicons
@@ -45,7 +46,6 @@ function HomeStack() {
       <Stack.Screen name={ROUTES.HOME_CATEGORY} component={Category} />
       <Stack.Screen name={ROUTES.HOME_TRENDING} component={Category} />
       <Stack.Screen name={ROUTES.HOME_LATEST} component={Category} />
-      <Stack.Screen name={ROUTES.HOME_CATEGORIES} component={Categories} />
       {Object.keys(CategoryEnum).map((cat, i) => (
         <Stack.Screen
           name={`${ROUTES.HOME_CATEGORY}.${cat}`}

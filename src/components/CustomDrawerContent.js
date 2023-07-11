@@ -2,13 +2,14 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import { useState } from 'react'
 import { Image, LayoutAnimation, StyleSheet, Text, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useNavigation, useTheme } from '@react-navigation/native'
+import { useTheme } from '@react-navigation/native'
 import { ROUTES } from '@constants/routes'
 import IconButton from './IconButton'
 import LangModal from './LanguageModal'
 import { useStore } from '@zustand/store'
 import { CategoryEnum } from '@constants/categories'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getLighterShade } from '@constants/style'
 
 function CustomDrawerContent(props) {
   const { colors: themeColors, dark } = useTheme()
@@ -50,9 +51,9 @@ function CustomDrawerContent(props) {
           <View
             style={[styles.seperator, { borderColor: themeColors.text }]}
           ></View>
-          <Text style={[styles.subtitle, { color: themeColors.text }]}>
+          {/* <Text style={[styles.subtitle, { color: themeColors.text }]}>
             Categories
-          </Text>
+          </Text> */}
         </View>
 
         <DrawerItem
@@ -73,7 +74,7 @@ function CustomDrawerContent(props) {
             style={[
               styles.collapsed,
               {
-                backgroundColor: dark ? '#232323' : '#f0f0f0',
+                backgroundColor: getLighterShade(themeColors.border, 0.3),
               },
             ]}
           >
@@ -133,7 +134,7 @@ function CustomDrawerContent(props) {
             style={[
               styles.collapsed,
               {
-                backgroundColor: dark ? '#232323' : '#f0f0f0',
+                backgroundColor: getLighterShade(themeColors.border, 0.3),
               },
             ]}
           >
@@ -196,7 +197,7 @@ function CustomDrawerContent(props) {
             style={[
               styles.collapsed,
               {
-                backgroundColor: dark ? '#232323' : '#f0f0f0',
+                backgroundColor: getLighterShade(themeColors.border, 0.3),
               },
             ]}
           >
@@ -250,7 +251,7 @@ function CustomDrawerContent(props) {
             style={[
               styles.collapsed,
               {
-                backgroundColor: dark ? '#232323' : '#f0f0f0',
+                backgroundColor: getLighterShade(themeColors.border, 0.3),
               },
             ]}
           >
@@ -320,7 +321,7 @@ function CustomDrawerContent(props) {
             style={[
               styles.collapsed,
               {
-                backgroundColor: dark ? '#232323' : '#f0f0f0',
+                backgroundColor: getLighterShade(themeColors.border, 0.3),
               },
             ]}
           >
@@ -383,7 +384,7 @@ function CustomDrawerContent(props) {
             style={[
               styles.collapsed,
               {
-                backgroundColor: dark ? '#232323' : '#f0f0f0',
+                backgroundColor: getLighterShade(themeColors.border, 0.3),
               },
             ]}
           >
@@ -480,14 +481,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   seperator: {
-    marginVertical: 10,
+    marginVertical: 20,
     borderTopWidth: 0.5,
     width: '75%',
   },
   // TODO. do we actually need this ?
   subtitle: {
     width: '90%',
-    marginVertical: 10,
+    marginTop: 10,
     fontSize: 10,
   },
   bottomContainer: {

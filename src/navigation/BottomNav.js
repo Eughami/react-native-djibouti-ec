@@ -13,12 +13,12 @@ const BottomTab = createBottomTabNavigator()
 
 function BottomNav() {
   const routeName = useStore((state) => state.routeName)
+  const theme = useStore((state) => state.theme)
   return (
     <BottomTab.Navigator
-      // backBehavior='history'
       screenOptions={({ route, navigation }) => ({
         headerShown: false,
-        tabBarActiveTintColor: COLORS.primary.light400,
+        tabBarActiveTintColor: COLORS[theme].dominant,
         tabBarHideOnKeyboard: true,
         tabBarStyle: routeName.includes('.') && { display: 'none' },
         tabBarIcon: ({ focused, color, size }) => {

@@ -5,7 +5,7 @@ import Preview from '@components/Preview'
 import SortOptionsModal from '@components/SortOptionModal'
 import { sortOptions } from '@constants/common'
 import { ROUTES } from '@constants/routes'
-import { COLORS, extractRgbComponents } from '@constants/style'
+import { COLORS, getLighterShade } from '@constants/style'
 import { useTheme } from '@react-navigation/native'
 import { searchAds } from '@services/search'
 import { useStore } from '@zustand/store'
@@ -45,24 +45,20 @@ function Search({ navigation }) {
 
   const toggleDrawer = () => {
     if (isDrawerOpen) {
-      setTimeout(() => {
-        // Close the drawer
-        Animated.timing(drawerAnimation, {
-          toValue: 0,
-          duration: 300, // Adjust the animation duration as needed
-          useNativeDriver: true,
-        }).start(() => setIsDrawerOpen(false))
-      }, 0)
+      // Close the drawer
+      Animated.timing(drawerAnimation, {
+        toValue: 0,
+        duration: 300, // Adjust the animation duration as needed
+        useNativeDriver: true,
+      }).start(() => setIsDrawerOpen(false))
     } else {
-      setTimeout(() => {
-        // Open the drawer
-        setIsDrawerOpen(true)
-        Animated.timing(drawerAnimation, {
-          toValue: 1,
-          duration: 300, // Adjust the animation duration as needed
-          useNativeDriver: true,
-        }).start()
-      }, 0)
+      // Open the drawer
+      setIsDrawerOpen(true)
+      Animated.timing(drawerAnimation, {
+        toValue: 1,
+        duration: 300, // Adjust the animation duration as needed
+        useNativeDriver: true,
+      }).start()
     }
   }
 
@@ -71,9 +67,6 @@ function Search({ navigation }) {
     outputRange: [width, 0], // Adjust the desired width of the drawer
   })
 
-  const { blue, green, red } = extractRgbComponents(
-    dark ? colors.border : colors.background,
-  )
   const [inputText, setInputText] = useState('')
 
   const {
@@ -140,7 +133,7 @@ function Search({ navigation }) {
           style={[
             styles.iconButtonContainer,
             {
-              backgroundColor: `rgba(${red},${green},${blue},1)`,
+              backgroundColor: dark ? colors.border : colors.background,
             },
           ]}
         >
@@ -156,7 +149,7 @@ function Search({ navigation }) {
           style={[
             styles.iconButtonContainer,
             {
-              backgroundColor: `rgba(${red},${green},${blue},1)`,
+              backgroundColor: dark ? colors.border : colors.background,
             },
           ]}
         >
@@ -175,10 +168,9 @@ function Search({ navigation }) {
           height: 50,
           marginVertical: 10,
           marginHorizontal: 5,
-          backgroundColor: colors.border,
+          backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
           color: colors.text,
-          borderColor: colors.border,
-          borderWidth: 1,
+          borderRadius: 5,
         }}
         onSubmitEditing={() => {
           setInitialRender(false)
@@ -188,7 +180,8 @@ function Search({ navigation }) {
         onChangeText={(value) => setInputText(value)}
         returnKeyType='search'
         placeholder=' Search for ads'
-        placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+        // placeholderTextColor={COLORS[dark ? 'dark' : 'light'].placeholder}
+        placeholderTextColor={getLighterShade(colors.text, 0.4)}
       />
       {page === 1 && loading ? (
         <Loader />
@@ -272,10 +265,13 @@ const Stack = createNativeStackNavigator()
 
 function SearchStack() {
   const routeName = useStore((state) => state.routeName)
+  const { dark } = useTheme()
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerStyle: {
+          backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
+        },
         headerTintColor: 'white',
         headerLeft: ({ tintColor }) => (
           <Ionicons

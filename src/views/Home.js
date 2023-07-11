@@ -15,7 +15,6 @@ import { useQuery } from 'react-query'
 import { getFav, homePageAds } from '@services/home'
 import Loader from '@components/Loader'
 import { COLORS } from '@constants/style'
-import { useRefreshOnFocus } from '@components/FocusRefetch'
 import { useEffect } from 'react'
 import { useStore } from '@zustand/store'
 
@@ -98,7 +97,7 @@ function HomePage() {
 
 function HomeAds({ loading, ads, refetch }) {
   const width = Dimensions.get('window').width
-  const { colors } = useTheme()
+  const { dark, colors } = useTheme()
   if (loading)
     return (
       <View style={{ minHeight: 200 }}>
@@ -121,7 +120,7 @@ function HomeAds({ loading, ads, refetch }) {
           </Text>
           <Button
             title='refetch'
-            color={COLORS.primary.color}
+            color={COLORS[dark ? 'dark' : 'light'].dominantShade1}
             onPress={refetch}
           />
         </View>

@@ -1,13 +1,12 @@
-import { extractRgbComponents } from '@constants/style'
+import { COLORS, getLighterShade } from '@constants/style'
 import { useTheme } from '@react-navigation/native'
 import { Modal, Text, View, useWindowDimensions } from 'react-native'
 import ProgressBar from 'react-native-progress/Bar'
 
 function Progressoverlay({ visible, progress, title }) {
-  const { colors } = useTheme()
+  const { dark, colors } = useTheme()
   const { width } = useWindowDimensions()
 
-  const { blue, green, red } = extractRgbComponents(colors.card)
   return (
     <Modal
       animationType='slide'
@@ -18,18 +17,23 @@ function Progressoverlay({ visible, progress, title }) {
       <View
         style={{
           flex: 1,
-          backgroundColor: `rgba(${red},${green},${blue},0.8)`,
+          backgroundColor: getLighterShade(colors.card, 0.7),
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
         <ProgressBar
-          color={colors.primary}
+          color={COLORS[dark ? 'dark' : 'light'].dominant}
           progress={progress}
           width={parseInt(width * 0.8)}
           height={10}
         />
-        <Text style={{ marginVertical: 10, color: colors.primary }}>
+        <Text
+          style={{
+            marginVertical: 10,
+            color: COLORS[dark ? 'dark' : 'light'].dominant,
+          }}
+        >
           {title}
         </Text>
       </View>

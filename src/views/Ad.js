@@ -48,7 +48,14 @@ function Ad() {
   return (
     <>
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>{ad.title}</Text>
+        <Text
+          style={[
+            styles.title,
+            { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
+          ]}
+        >
+          {ad.title}
+        </Text>
         {!ad?.attachment?.length ? (
           <View
             style={{
@@ -138,7 +145,12 @@ function Ad() {
           {ad.description}
         </Text>
         <View style={styles.priceContainer}>
-          <Text style={styles.priceText}>
+          <Text
+            style={[
+              styles.priceText,
+              { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
+            ]}
+          >
             {parseInt(ad.price).toLocaleString('en-US')} FDJ
           </Text>
           <View style={styles.detailsContainer}>

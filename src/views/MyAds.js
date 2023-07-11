@@ -19,7 +19,7 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useMutation, useQuery } from 'react-query'
 import Ad from './Ad'
 import { API_BASE_URL } from '@constants/api'
-import { COLORS, extractRgbComponents } from '@constants/style'
+import { COLORS } from '@constants/style'
 import { Ionicons } from '@expo/vector-icons'
 import { useStore } from '@zustand/store'
 
@@ -31,10 +31,6 @@ function MyProfile() {
       rowMap[rowKey].closeRow()
     }
   }
-
-  const { blue, green, red } = extractRgbComponents(
-    dark ? colors.border : colors.background,
-  )
 
   const {
     isLoading,
@@ -77,14 +73,14 @@ function MyProfile() {
       <View
         style={[
           styles.itemContainer,
-          { backgroundColor: `rgba(${red},${green},${blue},1)` },
+          { backgroundColor: dark ? colors.border : colors.background },
         ]}
       >
         <Image
           style={{
             marginHorizontal: 10,
-            width: 80,
-            height: 80,
+            width: 70,
+            height: 70,
             resizeMode: 'contain',
           }}
           source={
@@ -104,7 +100,7 @@ function MyProfile() {
             // borderColor: 'red',
             justifyContent: 'space-around',
             // borderWidth: 1,
-            height: 70,
+            height: 60,
           }}
         >
           <Text
@@ -167,17 +163,19 @@ function MyProfile() {
     />
   )
 }
-
+// TODO.Add toggle for notification and some view for the favorite categories
 const Stack = createNativeStackNavigator()
 
 function ProfileStack() {
   const routeName = useStore((state) => state.routeName)
-
+  const { dark } = useTheme()
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
         headerShown: true,
-        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerStyle: {
+          backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
+        },
         headerTintColor: 'white',
         headerLeft: ({ tintColor }) => (
           <Ionicons
@@ -219,10 +217,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingLeft: 15,
-    height: 100,
+    height: 80,
   },
   swipedStyle: {
-    height: 100,
+    height: 80,
     borderRadius: 20,
     overflow: 'hidden',
   },
@@ -231,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     borderRadius: 20,
-    height: 100,
+    height: 80,
     overflow: 'hidden',
   },
 })

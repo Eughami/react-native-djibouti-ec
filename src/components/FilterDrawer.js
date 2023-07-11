@@ -18,6 +18,7 @@ import IconButton from './IconButton'
 import { DateOptions } from '@constants/common'
 import CustomButton from './CustomButton'
 import { useStore } from '@zustand/store'
+import { COLORS, getLighterShade } from '@constants/style'
 
 function FilterDrawer(props) {
   const height = Dimensions.get('window').height
@@ -91,7 +92,7 @@ function FilterDrawer(props) {
             style={{
               marginBottom: 10,
               // borderWidth: 1,
-              backgroundColor: dark ? '#2b2e3dff' : colors.background,
+              backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
               borderColor: colors.border,
               borderWidth: 0,
             }}
@@ -110,7 +111,7 @@ function FilterDrawer(props) {
               maxHeight: height * 0.4 + 50,
               height: height * 0.4 - 50,
               borderColor: colors.border,
-              backgroundColor: dark ? '#2b2e3dff' : colors.background,
+              backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
               borderLeftWidth: 0,
               borderRightWidth: 0,
               borderWidth: 1,
@@ -137,11 +138,11 @@ function FilterDrawer(props) {
                 {
                   color: colors.text,
                   borderColor: colors.border,
-                  backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                  backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
                 },
               ]}
               placeholder='Min'
-              placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+              placeholderTextColor={getLighterShade(colors.text, 0.4)}
               onBlur={() =>
                 min && setMin(parseInt(min).toLocaleString('en-US'))
               }
@@ -158,11 +159,11 @@ function FilterDrawer(props) {
                 {
                   color: colors.text,
                   borderColor: colors.border,
-                  backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                  backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
                 },
               ]}
               placeholder='Max'
-              placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+              placeholderTextColor={getLighterShade(colors.text, 0.4)}
               onBlur={() =>
                 max && setMax(parseInt(max).toLocaleString('en-US'))
               }
@@ -191,7 +192,6 @@ function FilterDrawer(props) {
               <Text
                 style={{
                   color: colors.text,
-                  fontWeight: 'bold',
                   fontSize: 14,
                 }}
               >
@@ -210,7 +210,6 @@ function FilterDrawer(props) {
               <Text
                 style={{
                   color: colors.text,
-                  fontWeight: 'bold',
                   fontSize: 14,
                 }}
               >
@@ -255,9 +254,9 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     width: '45%',
-    borderWidth: 2,
+    borderWidth: 1,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   dateContainer: {
     alignItems: 'center',

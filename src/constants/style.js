@@ -1,4 +1,24 @@
 export const COLORS = {
+  light: {
+    dominant: '#FF8000',
+    secondary: '#5A4522',
+    accent: '#FDF6E3',
+    dominantShade1: '#FFA533',
+    dominantShade2: '#FFC966',
+    dominantShade3: '#FFDF99',
+    placeholder: '#535353',
+    inputBG: '#F2F2F2',
+  },
+  dark: {
+    dominant: '#FF4500',
+    secondary: '#321F0E',
+    accent: '#EDEDED',
+    dominantShade1: '#FF704D',
+    dominantShade2: '#FF8C6E',
+    dominantShade3: '#FFA590',
+    placeholder: '#8a8a8a',
+    inputBG: '#2b2e3dff',
+  },
   primary: {
     color: '#af5f14',
     colorLight: '#f8f0f7',
@@ -47,6 +67,11 @@ export function extractRgbComponents(rgbColor) {
 
   // Return the RGB component values as an object
   return { red, green, blue }
+}
+
+export function getLighterShade(rgb, opacity) {
+  const { blue, green, red } = extractRgbComponents(rgb)
+  return `rgba(${red},${green},${blue},${opacity} )`
 }
 
 export const formatPrice = (p) => parseInt(p).toLocaleString('en-US') || p

@@ -13,7 +13,7 @@ import { useForm, Controller } from 'react-hook-form'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { useEffect, useRef, useState } from 'react'
 import IconButton from '@components/IconButton'
-import { COLORS } from '@constants/style'
+import { COLORS, getLighterShade } from '@constants/style'
 import * as ImagePicker from 'expo-image-picker'
 import FormLabel from '@components/FormLabel'
 import { Video, ResizeMode } from 'expo-av'
@@ -26,6 +26,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useStore } from '@zustand/store'
 import { Ionicons } from '@expo/vector-icons'
 import { useQueryClient } from 'react-query'
+import CustomButton from '@components/CustomButton'
 
 function NewAd() {
   const queryClient = useQueryClient()
@@ -196,7 +197,6 @@ function NewAd() {
         flex: 1,
         backgroundColor: colors.card,
         padding: 10,
-        paddingBottom: 20,
       }}
     >
       <FormLabel label='Title' />
@@ -213,11 +213,12 @@ function NewAd() {
                 styles.input,
                 {
                   color: colors.text,
-                  borderColor: error ? 'red' : colors.border,
-                  backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                  borderColor: 'red',
+                  borderWidth: error ? 1 : 0,
+                  backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
                 },
               ]}
-              placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+              placeholderTextColor={getLighterShade(colors.text, 0.4)}
               onBlur={onBlur}
               onChangeText={(value) => onChange(value)}
               value={value}
@@ -248,12 +249,13 @@ function NewAd() {
                 styles.input,
                 {
                   color: colors.text,
-                  borderColor: error ? 'red' : colors.border,
+                  borderColor: 'red',
+                  borderWidth: error ? 1 : 0,
                   textAlignVertical: 'top',
-                  backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                  backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
                 },
               ]}
-              placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+              placeholderTextColor={getLighterShade(colors.text, 0.4)}
               onBlur={onBlur}
               onChangeText={(value) => onChange(value)}
               value={value}
@@ -483,8 +485,9 @@ function NewAd() {
               style={{
                 marginBottom: 10,
                 borderWidth: 1,
-                backgroundColor: dark ? '#2b2e3dff' : colors.background,
-                borderColor: error ? 'red' : colors.border,
+                backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
+                borderColor: 'red',
+                borderWidth: error ? 1 : 0,
               }}
               listParentLabelStyle={{
                 fontWeight: 'bold',
@@ -559,12 +562,13 @@ function NewAd() {
               styles.input,
               {
                 color: colors.text,
-                borderColor: error ? 'red' : colors.border,
-                backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                borderColor: 'red',
+                borderWidth: error ? 1 : 0,
+                backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
               },
             ]}
             placeholder='Optional'
-            placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+            placeholderTextColor={getLighterShade(colors.text, 0.4)}
             onBlur={() =>
               value && onChange(parseInt(value).toLocaleString('en-US'))
             }
@@ -614,7 +618,7 @@ function NewAd() {
                 width: 100,
                 marginHorizontal: images.length === 0 ? 0 : 10,
                 borderColor: colors.border,
-                backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
                 borderWidth: 1,
               }}
             >
@@ -670,7 +674,7 @@ function NewAd() {
                   height: 200,
                   width: 200,
                   borderColor: colors.border,
-                  backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                  backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
                   borderWidth: 1,
                 }}
               >
@@ -697,12 +701,13 @@ function NewAd() {
                 styles.input,
                 {
                   color: colors.text,
-                  borderColor: error ? 'red' : colors.border,
-                  backgroundColor: dark ? '#2b2e3dff' : colors.background,
+                  borderColor: 'red',
+                  borderWidth: error ? 1 : 0,
+                  backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
                 },
               ]}
               placeholder='77 .. .. .. '
-              placeholderTextColor={dark ? '#8a8a8a' : '#535353'}
+              placeholderTextColor={getLighterShade(colors.text, 0.4)}
               onBlur={() => value && onChange(value.replace(/(.{2})/g, '$1 '))}
               onChangeText={(value) => onChange(value)}
               value={value}
@@ -728,24 +733,12 @@ function NewAd() {
       />
 
       <View style={styles.button}>
-        <View style={{ flex: 1, paddingRight: 10 }}>
-          <Button
-            style={styles.buttonInner}
-            color={dark ? '#2b2e3dff' : colors.border}
-            title='Reset'
-            onPress={() => {
-              resetAll()
-            }}
-          />
-        </View>
-        <View style={{ flex: 1, paddingLeft: 10 }}>
-          <Button
-            style={styles.buttonInner}
-            title='Submit'
-            onPress={handleSubmit(onSubmit)}
-            // onPress={test}
-          />
-        </View>
+        <CustomButton text='Reset' onPress={resetAll} />
+        <CustomButton
+          isSelected
+          text='Submit'
+          onPress={handleSubmit(onSubmit)}
+        />
       </View>
       <Progressoverlay
         progress={progress}
@@ -760,10 +753,14 @@ const Stack = createNativeStackNavigator()
 
 function NewStack() {
   const routeName = useStore((state) => state.routeName)
+  const { dark } = useTheme()
+
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerStyle: { backgroundColor: COLORS.primary.color },
+        headerStyle: {
+          backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
+        },
         headerTintColor: 'white',
         headerLeft: ({ tintColor }) => (
           <Ionicons
@@ -788,13 +785,11 @@ function NewStack() {
 }
 
 const styles = StyleSheet.create({
-  container: {},
   button: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-    marginBottom: 30,
-    color: 'white',
+    justifyContent: 'space-between',
+    marginTop: 15,
+    marginBottom: 15,
   },
   input: {
     flex: 1,

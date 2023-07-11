@@ -2,9 +2,10 @@ import { useNavigation, useTheme } from '@react-navigation/native'
 import { Text, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { ROUTES } from '@constants/routes'
+import { COLORS } from '@constants/style'
 
 function Avatar({ icon, title }) {
-  const { colors } = useTheme()
+  const { dark, colors } = useTheme()
   const { navigate } = useNavigation()
   return (
     <View
@@ -21,7 +22,7 @@ function Avatar({ icon, title }) {
           height: 70,
           marginVertical: 10,
 
-          backgroundColor: '#FF7F50',
+          backgroundColor: COLORS[dark ? 'dark' : 'light'].secondary,
           borderRadius: 50,
           justifyContent: 'center',
           alignItems: 'center',

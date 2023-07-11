@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '@constants/api'
 import { ROUTES } from '@constants/routes'
 import { COLORS, formatPrice } from '@constants/style'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useTheme } from '@react-navigation/native'
 import * as React from 'react'
 import {
   Text,
@@ -15,6 +15,7 @@ import {
 function Preview(item) {
   const navigation = useNavigation()
   const colorScheme = useColorScheme()
+  const { dark } = useTheme()
   const { title, price, isPremium, attachment = [] } = item
 
   let imageUrl = undefined
@@ -42,7 +43,12 @@ function Preview(item) {
             />
           )}
           {isPremium && (
-            <View style={styles.ribbon}>
+            <View
+              style={[
+                styles.ribbon,
+                { backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant },
+              ]}
+            >
               <Text style={styles.ribbonText}> Premium </Text>
             </View>
           )}
@@ -50,6 +56,9 @@ function Preview(item) {
             <View
               style={[
                 styles.price,
+                {
+                  backgroundColor: COLORS[dark ? 'dark' : 'light'].secondary,
+                },
                 item.small && { paddingHorizontal: 4, paddingVertical: 4 },
               ]}
             >
