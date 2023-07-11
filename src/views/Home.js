@@ -2,6 +2,7 @@ import { useTheme } from '@react-navigation/native'
 import {
   AppState,
   Button,
+  Dimensions,
   Platform,
   ScrollView,
   Text,
@@ -37,7 +38,6 @@ function Title({ text }) {
 }
 
 function TopCategories() {
-  // TODO. remove this flatlist and make it  a fixed 6  items
   return (
     <View
       style={{
@@ -97,6 +97,7 @@ function HomePage() {
 }
 
 function HomeAds({ loading, ads, refetch }) {
+  const width = Dimensions.get('window').width
   const { colors } = useTheme()
   if (loading)
     return (
@@ -125,11 +126,23 @@ function HomeAds({ loading, ads, refetch }) {
           />
         </View>
       ) : (
-        <>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}
+        >
           {ads.data.map((item) => (
-            <Preview {...item} key={item.id} />
+            <View
+              key={item.id}
+              style={{
+                width: width > 500 ? '50%' : '100%',
+              }}
+            >
+              <Preview {...item} />
+            </View>
           ))}
-        </>
+        </View>
       )}
     </>
   )

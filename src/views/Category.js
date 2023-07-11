@@ -13,6 +13,7 @@ import { adview } from '@services/log'
 import { useStore } from '@zustand/store'
 import { useEffect, useRef, useState } from 'react'
 import {
+  Dimensions,
   FlatList,
   LayoutAnimation,
   Modal,
@@ -21,7 +22,7 @@ import {
   Text,
   View,
 } from 'react-native'
-import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 function Category() {
   const queryClient = useQueryClient()
@@ -39,6 +40,7 @@ function Category() {
   const flatListRef = useRef(null)
   const viewDurationRef = useRef(null)
   const viewPerAd = useRef([])
+  const width = Dimensions.get('window').width
 
   const { blue, green, red } = extractRgbComponents(
     dark ? colors.border : colors.background,
@@ -191,6 +193,7 @@ function Category() {
             onEndReachedThreshold={0.5}
             onViewableItemsChanged={onViewableItemsChanged}
             ListHeaderComponent={Headercom}
+            numColumns={width > 500 ? 2 : 1}
             ListEmptyComponent={
               <View
                 style={{

@@ -219,6 +219,7 @@ function Search({ navigation }) {
           onEndReached={handleEndReached}
           stickyHeaderHiddenOnScroll
           onEndReachedThreshold={0.5}
+          numColumns={width > 500 ? 2 : 1}
           ListEmptyComponent={
             <View
               style={{
