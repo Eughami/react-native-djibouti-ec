@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10, // Adjust the top position as per your requirement
     left: -25, // Adjust the left position as per your requirement
-    backgroundColor: COLORS.primary.color, // Customize the ribbon background color
     paddingHorizontal: 10,
     paddingVertical: 5,
     transform: [{ rotate: '-45deg' }],
@@ -149,7 +148,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     // top: 10, // Adjust the top position as per your requirement
     right: 10, // Adjust the left position as per your requirement
-    backgroundColor: '#FF6F61', // Customize the ribbon background color
     paddingHorizontal: 10,
     paddingVertical: 5,
     // transform: [{ rotate: '45deg' }],

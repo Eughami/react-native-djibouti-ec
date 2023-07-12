@@ -120,7 +120,7 @@ function HomeAds({ loading, ads, refetch }) {
           </Text>
           <Button
             title='refetch'
-            color={COLORS[dark ? 'dark' : 'light'].dominantShade1}
+            color={COLORS[dark ? 'dark' : 'light'].secondary}
             onPress={refetch}
           />
         </View>

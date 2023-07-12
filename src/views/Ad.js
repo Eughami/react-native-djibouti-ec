@@ -5,7 +5,7 @@ import { ImageZoom } from '@likashefqet/react-native-image-zoom'
 import { useRoute, useTheme } from '@react-navigation/native'
 import { getProduct } from '@services/home'
 import { ResizeMode, Video } from 'expo-av'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Dimensions,
   Image,
@@ -33,7 +33,6 @@ function Ad() {
   const video = useRef(null)
 
   const [index, setIndex] = useState(0)
-  console.log({ width })
   // TODO. Add a view with device details (on mount ??????--on scroll--?????)
 
   const {
@@ -104,11 +103,8 @@ function Ad() {
                     ref={video}
                     // isMuted
                     style={{
-                      margin: 10,
                       width: '100%',
                       height: '100%',
-                      // borderColor: colors.border,
-                      // borderWidth: 1,
                     }}
                     source={{
                       uri: `${API_BASE_URL}/files/${ad.attachment[index].path}`,
@@ -210,7 +206,6 @@ const styles = StyleSheet.create({
   title: {
     paddingVertical: 10,
     fontSize: 24,
-    color: COLORS.primary.color,
   },
   pagination: {
     flexDirection: 'row',
@@ -230,7 +225,6 @@ const styles = StyleSheet.create({
   priceText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.primary.color,
   },
   detailsContainer: {
     flexDirection: 'row',

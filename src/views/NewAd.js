@@ -758,6 +758,7 @@ function NewStack() {
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
+        animation: 'slide_from_right',
         headerStyle: {
           backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
         },

@@ -20,7 +20,7 @@ function HomeStack() {
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerShown: true,
+        animation: 'slide_from_right',
         title: handleRoutetitle(routeName),
         headerStyle: { backgroundColor: COLORS[theme].dominant },
         headerTintColor: 'white',

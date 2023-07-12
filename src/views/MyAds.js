@@ -144,7 +144,7 @@ function MyProfile() {
         padding: 10,
         backgroundColor: colors.card,
       }}
-      data={ads.data}
+      data={ads?.data}
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
       renderHiddenItem={renderHiddenItem}
@@ -153,7 +153,7 @@ function MyProfile() {
       }
       disableRightSwipe
       rightOpenValue={-50}
-      previewRowKey={ads.data?.[0]?.id}
+      previewRowKey={ads?.data?.[0]?.id}
       previewOpenValue={-50}
       previewOpenDelay={3000}
       previewDuration={1000}
@@ -172,7 +172,7 @@ function ProfileStack() {
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerShown: true,
+        animation: 'slide_from_right',
         headerStyle: {
           backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
         },

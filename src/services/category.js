@@ -1,4 +1,5 @@
 import axiosInstance from '@constants/axiosInstance'
+import { errorLog } from './log'
 
 export const adsPerCategory = (page, category = null, sort = null) => {
   if (category === 'trending') return trendingAds()
