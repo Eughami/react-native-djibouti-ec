@@ -22,9 +22,12 @@ import { API_BASE_URL } from '@constants/api'
 import { COLORS } from '@constants/style'
 import { Ionicons } from '@expo/vector-icons'
 import { useStore } from '@zustand/store'
+import translate from '@lang/translate'
+import { handleRoutetitle } from '@constants/common'
 
 function MyProfile() {
   const { dark, colors } = useTheme()
+  const lang = useStore((state) => state.lang)
   const { navigate } = useNavigation()
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -79,8 +82,8 @@ function MyProfile() {
         <Image
           style={{
             marginHorizontal: 10,
-            width: 70,
-            height: 70,
+            width: 60,
+            height: 60,
             resizeMode: 'contain',
           }}
           source={
@@ -100,7 +103,7 @@ function MyProfile() {
             // borderColor: 'red',
             justifyContent: 'space-around',
             // borderWidth: 1,
-            height: 60,
+            height: 55,
           }}
         >
           <Text
@@ -118,19 +121,24 @@ function MyProfile() {
   )
 
   const renderHiddenItem = (data, rowMap) => (
-    <View style={[styles.rowBack, {}]}>
-      <IconButton
-        color='red'
-        icon='trash-outline'
-        size={25}
-        onPress={() => deleteRow(rowMap, data.item.id)}
-      />
-      {/* <TouchableOpacity
-        style={[styles.backRightBtn, styles.backRightBtnRight]}
-        onPress={() => deleteRow(rowMap, data.item.id)}
+    <View style={[styles.rowBack, { marginLeft: 20 }]}>
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 5,
+        }}
       >
-        <Text style={styles.backTextWhite}>Delete</Text>
-      </TouchableOpacity> */}
+        <IconButton
+          color='white'
+          icon='trash-outline'
+          size={25}
+          onPress={() => deleteRow(rowMap, data.item.id)}
+        />
+        <Text style={{ fontSize: 10, color: 'white', fontWeight: 'bold' }}>
+          {translate('delete', lang)}
+        </Text>
+      </View>
     </View>
   )
 
@@ -149,12 +157,14 @@ function MyProfile() {
       renderItem={renderItem}
       renderHiddenItem={renderHiddenItem}
       ListEmptyComponent={
-        <Text style={styles.emptyText}>You have not posted any ads</Text>
+        <Text style={[styles.emptyText, { color: colors.text }]}>
+          {translate('error.noads', lang)}
+        </Text>
       }
       disableRightSwipe
-      rightOpenValue={-50}
+      rightOpenValue={-60}
       previewRowKey={ads?.data?.[0]?.id}
-      previewOpenValue={-50}
+      previewOpenValue={-60}
       previewOpenDelay={3000}
       previewDuration={1000}
       onRowDidOpen={onRowDidOpen}
@@ -168,11 +178,13 @@ const Stack = createNativeStackNavigator()
 
 function ProfileStack() {
   const routeName = useStore((state) => state.routeName)
+  const lang = useStore((state) => state.lang)
   const { dark } = useTheme()
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
         animation: 'slide_from_right',
+        title: translate(handleRoutetitle(routeName), lang),
         headerStyle: {
           backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
         },
@@ -194,7 +206,7 @@ function ProfileStack() {
         ),
       })}
     >
-      <Stack.Screen name={ROUTES.MY_ADS} component={MyProfile} />
+      <Stack.Screen name={ROUTES.PROFILE} component={MyProfile} />
       <Stack.Screen name={ROUTES.HOME_AD} component={Ad} />
     </Stack.Navigator>
   )
@@ -217,10 +229,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingLeft: 15,
-    height: 80,
+    backgroundColor: '#cc2932',
+    height: 70,
   },
   swipedStyle: {
-    height: 80,
+    height: 70,
     borderRadius: 20,
     overflow: 'hidden',
   },
@@ -229,7 +242,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     borderRadius: 20,
-    height: 80,
+    height: 70,
     overflow: 'hidden',
   },
 })

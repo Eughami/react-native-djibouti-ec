@@ -4,8 +4,9 @@ import { ROUTES } from './routes'
 export const handleRoutetitle = (key) => {
   // TODO.Handle formatting & translation here
   // TODO key with . are nested so only set the last text
-  if (key.startsWith('Home.')) return key.split('.').pop()
-  return key
+  const c = key.split('.').pop()
+  if (Object.keys(CategoryEnum).includes(c)) return `categories.${c}`
+  return `routes.${key}`
 }
 
 export const isNestedRoute = (route) => {
@@ -17,12 +18,12 @@ export const isNestedRoute = (route) => {
 
 export const sortOptions = [
   { value: 'createdAt,DESC', label: 'newest' },
-  { value: 'createdAt,ASC', label: 'oldest ' },
-  { value: 'price,DESC', label: 'most expensive ' },
+  { value: 'createdAt,ASC', label: 'oldest' },
+  { value: 'price,DESC', label: 'mostexpensive' },
   { value: 'price,ASC', label: 'cheapest' },
 ]
 
-export const DateOptions = ['today', 'This week', 'This month', 'All']
+export const DateOptions = ['today', 'week', 'month', 'all']
 
 const monthListEN = [
   'January',

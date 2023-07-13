@@ -8,12 +8,14 @@ import NewAdStack from '@views/NewAd'
 import MyAdsStack from '@views/MyAds'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeStack from './HomeStack'
+import translate from '@lang/translate'
 
 const BottomTab = createBottomTabNavigator()
 
 function BottomNav() {
   const routeName = useStore((state) => state.routeName)
   const theme = useStore((state) => state.theme)
+  const lang = useStore((state) => state.lang)
   return (
     <BottomTab.Navigator
       screenOptions={({ route, navigation }) => ({
@@ -21,6 +23,8 @@ function BottomNav() {
         tabBarActiveTintColor: COLORS[theme].dominant,
         tabBarHideOnKeyboard: true,
         tabBarStyle: routeName.includes('.') && { display: 'none' },
+        tabBarLabel: translate(`routes.${routeName}`, lang),
+        tabBarShowLabel: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
 

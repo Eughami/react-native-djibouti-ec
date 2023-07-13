@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { ROUTES } from '@constants/routes'
 import { COLORS } from '@constants/style'
 
-function Avatar({ icon, title }) {
+function Avatar({ icon, title, category }) {
   const { dark, colors } = useTheme()
   const { navigate } = useNavigation()
   return (
@@ -33,7 +33,7 @@ function Avatar({ icon, title }) {
           size={35}
           color='white'
           onPress={() =>
-            navigate(`${ROUTES.HOME_CATEGORY}.${title}`, { category: title })
+            navigate(`${ROUTES.HOME_CATEGORY}.${category}`, { category })
           }
         />
       </View>

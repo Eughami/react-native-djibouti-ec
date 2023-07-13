@@ -4,6 +4,7 @@ import Preview from '@components/Preview'
 import SortOptionsModal from '@components/SortOptionModal'
 import { CategoryEnum } from '@constants/categories'
 import { sortOptions } from '@constants/common'
+import translate from '@lang/translate'
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native'
 import { adsPerCategory } from '@services/category'
 import { updateFav } from '@services/home'
@@ -37,6 +38,7 @@ function Category() {
   const viewDurationRef = useRef(null)
   const viewPerAd = useRef([])
   const width = Dimensions.get('window').width
+  const lang = useStore((state) => state.lang)
 
   const {
     isLoading,
@@ -164,7 +166,7 @@ function Category() {
           color={colors.text}
           size={20}
           onPress={handleToggleDropdown}
-          text={sort.label || 'Sort'}
+          text={translate(`sort.${sort.label}`, lang)}
         />
       </View>
     </View>

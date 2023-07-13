@@ -3,7 +3,7 @@ import IconButton from '@components/IconButton'
 import Loader from '@components/Loader'
 import Preview from '@components/Preview'
 import SortOptionsModal from '@components/SortOptionModal'
-import { sortOptions } from '@constants/common'
+import { handleRoutetitle, sortOptions } from '@constants/common'
 import { ROUTES } from '@constants/routes'
 import { COLORS, getLighterShade } from '@constants/style'
 import { useTheme } from '@react-navigation/native'
@@ -26,11 +26,13 @@ import { Ionicons } from '@expo/vector-icons'
 import Ad from './Ad'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { trendingAds } from '@services/category'
+import translate from '@lang/translate'
 
 function Search({ navigation }) {
   const width = Dimensions.get('window').width
 
   const { colors, dark } = useTheme()
+  const lang = useStore((state) => state.lang)
   const filters = useStore((state) => state.filters)
   const setFilters = useStore((state) => state.setFilters)
   const [sort, setSort] = useState(sortOptions[0])
@@ -142,7 +144,7 @@ function Search({ navigation }) {
             color={colors.text}
             size={20}
             onPress={handleToggleDropdown}
-            text={sort.label || 'Sort'}
+            text={translate(`sort.${sort.label}`, lang)}
           />
         </View>
         <View
@@ -159,7 +161,7 @@ function Search({ navigation }) {
             size={20}
             // onPress={() => navigation.toggleDrawer()}
             onPress={() => toggleDrawer()}
-            text='Filter'
+            text={translate(`filter`, lang)}
           />
         </View>
       </View>
@@ -179,7 +181,7 @@ function Search({ navigation }) {
         value={inputText}
         onChangeText={(value) => setInputText(value)}
         returnKeyType='search'
-        placeholder=' Search for ads'
+        placeholder={translate(`search.placeholder`, lang)}
         // placeholderTextColor={COLORS[dark ? 'dark' : 'light'].placeholder}
         placeholderTextColor={getLighterShade(colors.text, 0.4)}
       />
@@ -190,9 +192,14 @@ function Search({ navigation }) {
           key='top'
           ListHeaderComponent={
             <Text
-              style={{ flex: 1, padding: 10, fontWeight: 'bold', fontSize: 14 }}
+              style={{
+                flex: 1,
+                fontWeight: 'bold',
+                fontSize: 14,
+                color: colors.text,
+              }}
             >
-              Top Ads
+              {translate('popular.ads', lang)}
             </Text>
           }
           style={{ flex: 1, padding: 10 }}
@@ -222,7 +229,9 @@ function Search({ navigation }) {
                 alignItems: 'center',
               }}
             >
-              <Text style={{ color: colors.text }}>No ads Found.</Text>
+              <Text style={{ color: colors.text }}>
+                {translate('no.ads', lang)}
+              </Text>
             </View>
           }
         />
@@ -265,11 +274,13 @@ const Stack = createNativeStackNavigator()
 
 function SearchStack() {
   const routeName = useStore((state) => state.routeName)
+  const lang = useStore((state) => state.lang)
   const { dark } = useTheme()
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
         animation: 'slide_from_right',
+        title: translate(handleRoutetitle(routeName), lang),
         headerStyle: {
           backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
         },

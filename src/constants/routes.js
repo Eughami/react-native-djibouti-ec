@@ -14,6 +14,6 @@ export const ROUTES = {
   SEARCH_DRAWER: 'SearchDrawer',
   NEW_AD: 'NewAd',
   NEW_AD_STACK: 'NewAdStack',
-  PROFILE_STACK: 'Profile',
-  MY_ADS: 'MyAds',
+  PROFILE_STACK: 'ProfileStack',
+  PROFILE: 'Profile',
 }

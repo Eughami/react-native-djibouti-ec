@@ -48,9 +48,9 @@ const formatDateOptions = (option) => {
   switch (option) {
     case 'today':
       return getDateXDaysBefore(0)
-    case 'This week':
+    case 'week':
       return getDateXDaysBefore(7)
-    case 'This month':
+    case 'month':
       return getDateXDaysBefore(30)
 
     default:

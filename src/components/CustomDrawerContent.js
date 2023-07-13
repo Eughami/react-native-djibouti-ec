@@ -10,9 +10,11 @@ import { useStore } from '@zustand/store'
 import { CategoryEnum } from '@constants/categories'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { getLighterShade } from '@constants/style'
+import translate from '@lang/translate'
 
 function CustomDrawerContent(props) {
   const { colors: themeColors, dark } = useTheme()
+  const lang = useStore((state) => state.lang)
   const theme = useStore((state) => state.theme)
   const swithTheme = useStore((state) => state.swithTheme)
   const [showVehicles, setShowVehicles] = useState(false)
@@ -35,11 +37,11 @@ function CustomDrawerContent(props) {
       <DrawerContentScrollView {...props}>
         {/* <DrawerItemList {...props} /> */}
         <DrawerItem
-          label='Latest Ads'
+          label={translate('routes.Home.LatestAd', lang)}
           onPress={() => props.navigation.navigate(ROUTES.HOME_LATEST)}
         />
         <DrawerItem
-          label='Popular Ads'
+          label={translate('routes.Home.Trending', lang)}
           // TODO.make an endpoint that gives top 20||50 ads for last week||month
           onPress={() =>
             props.navigation.navigate(ROUTES.HOME_TRENDING, {
@@ -59,7 +61,9 @@ function CustomDrawerContent(props) {
         <DrawerItem
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
-              <Text style={[styles.accordTitle, { color }]}>Vehicles</Text>
+              <Text style={[styles.accordTitle, { color }]}>
+                {translate('menu.Vehicles', lang)}
+              </Text>
               <Ionicons
                 name={showVehicles ? 'chevron-up' : 'chevron-down'}
                 size={20}
@@ -79,7 +83,10 @@ function CustomDrawerContent(props) {
             ]}
           >
             <DrawerItem
-              label={CategoryEnum.PartAndAccessory}
+              label={translate(
+                `categories.${CategoryEnum.PartAndAccessory}`,
+                lang,
+              )}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.PartAndAccessory}`,
@@ -88,7 +95,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Boat}
+              label={translate(`categories.${CategoryEnum.Boat}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Boat}`,
@@ -97,7 +104,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Motorcycle}
+              label={translate(`categories.${CategoryEnum.Motorcycle}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Motorcycle}`,
@@ -106,7 +113,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Car}
+              label={translate(`categories.${CategoryEnum.Car}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Car}`,
@@ -119,7 +126,9 @@ function CustomDrawerContent(props) {
         <DrawerItem
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
-              <Text style={[styles.accordTitle, { color }]}>Real Estate</Text>
+              <Text style={[styles.accordTitle, { color }]}>
+                {translate('menu.RealEstate', lang)}
+              </Text>
               <Ionicons
                 name={showEstate ? 'chevron-up' : 'chevron-down'}
                 size={20}
@@ -139,7 +148,10 @@ function CustomDrawerContent(props) {
             ]}
           >
             <DrawerItem
-              label={CategoryEnum.CommercialProperty}
+              label={translate(
+                `categories.${CategoryEnum.CommercialProperty}`,
+                lang,
+              )}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.CommercialProperty}`,
@@ -148,7 +160,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Land}
+              label={translate(`categories.${CategoryEnum.Land}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Land}`,
@@ -157,7 +169,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.HouseRent}
+              label={translate(`categories.${CategoryEnum.HouseRent}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HouseRent}`,
@@ -166,7 +178,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.HouseSale}
+              label={translate(`categories.${CategoryEnum.HouseSale}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HouseSale}`,
@@ -181,7 +193,7 @@ function CustomDrawerContent(props) {
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
               <Text style={[styles.accordTitle, { color }]}>
-                Jobs & Services
+                {translate('menu.jobs', lang)}
               </Text>
               <Ionicons
                 name={showJobs ? 'chevron-up' : 'chevron-down'}
@@ -202,7 +214,10 @@ function CustomDrawerContent(props) {
             ]}
           >
             <DrawerItem
-              label={CategoryEnum.MachineAndEquipment}
+              label={translate(
+                `categories.${CategoryEnum.MachineAndEquipment}`,
+                lang,
+              )}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.MachineAndEquipment}`,
@@ -211,7 +226,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Service}
+              label={translate(`categories.${CategoryEnum.Service}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Service}`,
@@ -220,7 +235,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Job}
+              label={translate(`categories.${CategoryEnum.Job}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Job}`,
@@ -235,7 +250,7 @@ function CustomDrawerContent(props) {
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
               <Text style={[styles.accordTitle, { color }]}>
-                Home Appliance
+                {translate('menu.homeAppliance', lang)}
               </Text>
               <Ionicons
                 name={showHomeItems ? 'chevron-up' : 'chevron-down'}
@@ -256,7 +271,7 @@ function CustomDrawerContent(props) {
             ]}
           >
             <DrawerItem
-              label={CategoryEnum.Accessory}
+              label={translate(`categories.${CategoryEnum.Accessory}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Accessory}`,
@@ -265,7 +280,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Clothe}
+              label={translate(`categories.${CategoryEnum.Clothe}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Clothe}`,
@@ -274,7 +289,10 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.AirConditioner}
+              label={translate(
+                `categories.${CategoryEnum.AirConditioner}`,
+                lang,
+              )}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.AirConditioner}`,
@@ -283,7 +301,10 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.HomeAppliance}
+              label={translate(
+                `categories.${CategoryEnum.HomeAppliance}`,
+                lang,
+              )}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HomeAppliance}`,
@@ -292,7 +313,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.HomeDecor}
+              label={translate(`categories.${CategoryEnum.HomeDecor}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.HomeDecor}`,
@@ -306,7 +327,9 @@ function CustomDrawerContent(props) {
         <DrawerItem
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
-              <Text style={[styles.accordTitle, { color }]}>Electronics</Text>
+              <Text style={[styles.accordTitle, { color }]}>
+                {translate('menu.Electronics', lang)}
+              </Text>
               <Ionicons
                 name={showElectrocnis ? 'chevron-up' : 'chevron-down'}
                 size={20}
@@ -326,7 +349,7 @@ function CustomDrawerContent(props) {
             ]}
           >
             <DrawerItem
-              label={CategoryEnum.TV}
+              label={translate(`categories.${CategoryEnum.TV}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.TV}`,
@@ -335,7 +358,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Mobile}
+              label={translate(`categories.${CategoryEnum.Mobile}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Mobile}`,
@@ -344,7 +367,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Game}
+              label={translate(`categories.${CategoryEnum.Game}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Game}`,
@@ -353,7 +376,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Computer}
+              label={translate(`categories.${CategoryEnum.Computer}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Computer}`,
@@ -368,7 +391,7 @@ function CustomDrawerContent(props) {
           label={({ color, focused }) => (
             <View style={styles.accordHeader}>
               <Text style={[styles.accordTitle, { color }]}>
-                Leisure, Sports & Hobby
+                {translate('menu.leisure', lang)}
               </Text>
               <Ionicons
                 name={showLeisure ? 'chevron-up' : 'chevron-down'}
@@ -389,7 +412,7 @@ function CustomDrawerContent(props) {
             ]}
           >
             <DrawerItem
-              label={CategoryEnum.Movie}
+              label={translate(`categories.${CategoryEnum.Movie}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Movie}`,
@@ -398,7 +421,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Toy}
+              label={translate(`categories.${CategoryEnum.Toy}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Toy}`,
@@ -407,7 +430,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Book}
+              label={translate(`categories.${CategoryEnum.Book}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Book}`,
@@ -416,7 +439,7 @@ function CustomDrawerContent(props) {
               }
             />
             <DrawerItem
-              label={CategoryEnum.Sport}
+              label={translate(`categories.${CategoryEnum.Sport}`, lang)}
               onPress={() =>
                 props.navigation.navigate(
                   `${ROUTES.HOME_CATEGORY}.${CategoryEnum.Sport}`,
@@ -451,7 +474,11 @@ function CustomDrawerContent(props) {
           }}
         />
         <Image
-          source={require('@assets/flags/fr-flag.png')}
+          source={
+            lang === 'en'
+              ? require('@assets/flags/en-flag.png')
+              : require('@assets/flags/fr-flag.png')
+          }
           style={styles.flagStlye}
         />
       </View>

@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import axiosInstance from '@constants/axiosInstance'
 import { errorLog, postLogs } from '@services/log'
+import { getLocales } from 'expo-localization'
+import translate from '@lang/translate'
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
@@ -34,7 +36,7 @@ if (Platform.OS === 'android') {
 
 const queryClient = new QueryClient()
 
-async function registerForPushNotificationsAsync() {
+async function registerForPushNotificationsAsync(lang) {
   let token
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync()
@@ -44,12 +46,12 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status
     }
     if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!')
+      alert(translate('error.no.notification.access', lang))
       return
     }
     token = (await Notifications.getExpoPushTokenAsync()).data
   } else {
-    alert('Must use physical device for Push Notifications')
+    alert(translate('error.real.device', lang))
   }
 
   if (Platform.OS === 'android') {
@@ -69,10 +71,13 @@ export default function App() {
   const theme = useStore((state) => state.theme)
   const swithTheme = useStore((state) => state.swithTheme)
   const setDeviceId = useStore((state) => state.setDeviceId)
+  const setLang = useStore((state) => state.setLang)
   const notificationListener = useRef()
   const responseListener = useRef()
 
   useEffect(() => {
+    const lang = getLocales()[0].languageCode
+    setLang(lang)
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         // INFO. This is when notification is received
@@ -99,7 +104,7 @@ export default function App() {
 
         // Fetch deviceInfo,pushToken and save in BE to get an ID
         if (!deviceId) {
-          const token = await registerForPushNotificationsAsync()
+          const token = await registerForPushNotificationsAsync(lang)
           const device = await axiosInstance({
             method: 'POST',
             url: '/devices',
@@ -114,9 +119,9 @@ export default function App() {
         }
         if (!theme) {
           theme = Appearance.getColorScheme()
-          await AsyncStorage.setItem('theme', theme)
           log['theme'] = performance.now() - log['tt']
         }
+        console.log(deviceId)
         setDeviceId(deviceId)
         swithTheme(theme)
         delete log['tt']

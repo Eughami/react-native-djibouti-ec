@@ -27,8 +27,11 @@ import { useStore } from '@zustand/store'
 import { Ionicons } from '@expo/vector-icons'
 import { useQueryClient } from 'react-query'
 import CustomButton from '@components/CustomButton'
+import translate from '@lang/translate'
+import { handleRoutetitle } from '@constants/common'
 
 function NewAd() {
+  const lang = useStore((state) => state.lang)
   const queryClient = useQueryClient()
   const { colors, dark } = useTheme()
   const video = useRef(null)
@@ -106,18 +109,18 @@ function NewAd() {
 
         setModalVisible(false)
         resetAll()
-        // TODO.change the content of the modal to show a close button with a success msg (?redirect to home?)
+        // TODO.on success redirect to home and invalidate the homequery
         Alert.alert('Your Ad is live!')
       })
       .catch(function (error) {
         setModalVisible(false)
         // TODO.make it modular in the future
-        let msg = 'Something went wrong'
-        let sub = 'Check your fields values and try again.'
+        let msg = translate('error.wrong', lang)
+        let sub = translate('error.check', lang)
         switch (error?.statusCode) {
           case 413:
-            msg = 'File too large'
-            sub = 'Size limit for images/videos is 20MB.'
+            msg = translate('error.filelarge', lang)
+            sub = translate('error.sizelimit', lang)
             break
 
           default:
@@ -127,6 +130,7 @@ function NewAd() {
         console.log('error from upload :', error)
       })
       .finally(() => {
+        // TODO. check if this gives error in the event of a redirect (sucess>home)
         setModalVisible(false)
         setProgress(0)
       })
@@ -176,7 +180,7 @@ function NewAd() {
       if (result.canceled) return
 
       if (result.assets[0]?.duration > 30000) {
-        Alert.alert('maximum video length is 30 sec')
+        Alert.alert(translate('error.videolength', lang))
         return
       }
       setVideo(result.assets[0].uri)
@@ -199,7 +203,7 @@ function NewAd() {
         padding: 10,
       }}
     >
-      <FormLabel label='Title' />
+      <FormLabel label={translate('title', lang)} />
       <Controller
         control={control}
         render={({
@@ -208,7 +212,7 @@ function NewAd() {
         }) => (
           <>
             <TextInput
-              placeholder='Title of the Ad'
+              placeholder={translate('title.placeholder', lang)}
               style={[
                 styles.input,
                 {
@@ -225,15 +229,15 @@ function NewAd() {
             />
             {error && (
               <Text style={{ color: 'red', padding: 10 }}>
-                {error?.message || 'this field is required'}
+                {translate('error.field.required', lang)}
               </Text>
             )}
           </>
         )}
         name='title'
-        rules={{ required: 'title is required' }}
+        rules={{ required: true }}
       />
-      <FormLabel label='Description' />
+      <FormLabel label={translate('description', lang)} />
       <Controller
         control={control}
         render={({
@@ -244,7 +248,7 @@ function NewAd() {
             <TextInput
               multiline
               numberOfLines={5}
-              placeholder='Describe what you are selling or or what you are offering.'
+              placeholder={translate('description.placeholder', lang)}
               style={[
                 styles.input,
                 {
@@ -262,16 +266,16 @@ function NewAd() {
             />
             {error && (
               <Text style={{ color: 'red', padding: 10 }}>
-                {error?.message || 'This field is required'}
+                {translate('error.field.required', lang)}
               </Text>
             )}
           </>
         )}
         name='description'
-        rules={{ required: 'A Description of the ad is required' }}
+        rules={{ required: true }}
       />
 
-      <FormLabel label='Category' />
+      <FormLabel label={translate('category', lang)} />
       <Controller
         control={control}
         name='category'
@@ -282,6 +286,7 @@ function NewAd() {
               open={open}
               listMode='MODAL'
               searchable
+              searchPlaceholder={translate('placeholder', lang)}
               value={field.value}
               categorySelectable={false}
               items={[
@@ -293,7 +298,7 @@ function NewAd() {
                       color={colors.text}
                     />
                   ),
-                  label: 'Vehicles',
+                  label: translate('menu.Vehicles', lang),
                   value: 'vehicle',
                 },
                 {
@@ -304,7 +309,7 @@ function NewAd() {
                       color={colors.text}
                     />
                   ),
-                  label: 'Real Estate',
+                  label: translate('menu.RealEstate', lang),
                   value: 'realState',
                 },
                 {
@@ -315,7 +320,7 @@ function NewAd() {
                       color={colors.text}
                     />
                   ),
-                  label: 'Jobs & Services',
+                  label: translate('menu.jobs', lang),
                   value: 'jobService',
                 },
                 {
@@ -326,7 +331,7 @@ function NewAd() {
                       color={colors.text}
                     />
                   ),
-                  label: 'Home & Personal Items',
+                  label: translate('menu.homeAppliance', lang),
                   value: 'home',
                 },
                 {
@@ -337,7 +342,7 @@ function NewAd() {
                       color={colors.text}
                     />
                   ),
-                  label: 'Electronics',
+                  label: translate('menu.Electronics', lang),
                   value: 'electronics',
                 },
                 {
@@ -348,126 +353,156 @@ function NewAd() {
                       color={colors.text}
                     />
                   ),
-                  label: 'Leisure, Sports & Hobby',
+                  label: translate('menu.leisure', lang),
                   value: 'leisure',
                 },
                 {
-                  label: CategoryEnum.Car,
+                  label: translate(`categories.${CategoryEnum.Car}`, lang),
                   value: CategoryEnum.Car,
                   parent: 'vehicle',
                 },
                 {
-                  label: CategoryEnum.Motorcycle,
+                  label: translate(
+                    `categories.${CategoryEnum.Motorcycle}`,
+                    lang,
+                  ),
                   value: CategoryEnum.Motorcycle,
                   parent: 'vehicle',
                 },
                 {
-                  label: CategoryEnum.Boat,
+                  label: translate(`categories.${CategoryEnum.Boat}`, lang),
                   value: CategoryEnum.Boat,
                   parent: 'vehicle',
                 },
                 {
-                  label: CategoryEnum.PartAndAccessory,
+                  label: translate(
+                    `categories.${CategoryEnum.PartAndAccessory}`,
+                    lang,
+                  ),
                   value: CategoryEnum.PartAndAccessory,
                   parent: 'vehicle',
                 },
                 {
-                  label: CategoryEnum.HouseSale,
+                  label: translate(
+                    `categories.${CategoryEnum.HouseSale}`,
+                    lang,
+                  ),
                   value: CategoryEnum.HouseSale,
                   parent: 'realState',
                 },
                 {
-                  label: CategoryEnum.HouseRent,
+                  label: translate(
+                    `categories.${CategoryEnum.HouseRent}`,
+                    lang,
+                  ),
                   value: CategoryEnum.HouseRent,
                   parent: 'realState',
                 },
                 {
-                  label: CategoryEnum.Land,
+                  label: translate(`categories.${CategoryEnum.Land}`, lang),
                   value: CategoryEnum.Land,
                   parent: 'realState',
                 },
                 {
-                  label: CategoryEnum.CommercialProperty,
+                  label: translate(
+                    `categories.${CategoryEnum.CommercialProperty}`,
+                    lang,
+                  ),
                   value: CategoryEnum.CommercialProperty,
                   parent: 'realState',
                 },
                 {
-                  label: CategoryEnum.Job,
+                  label: translate(`categories.${CategoryEnum.Job}`, lang),
                   value: CategoryEnum.Job,
                   parent: 'jobService',
                 },
                 {
-                  label: CategoryEnum.Service,
+                  label: translate(`categories.${CategoryEnum.Service}`, lang),
                   value: CategoryEnum.Service,
                   parent: 'jobService',
                 },
                 {
-                  label: CategoryEnum.MachineAndEquipment,
+                  label: translate(
+                    `categories.${CategoryEnum.MachineAndEquipment}`,
+                    lang,
+                  ),
                   value: CategoryEnum.MachineAndEquipment,
                   parent: 'jobService',
                 },
                 {
-                  label: CategoryEnum.HomeDecor,
+                  label: translate(
+                    `categories.${CategoryEnum.HomeDecor}`,
+                    lang,
+                  ),
                   value: CategoryEnum.HomeDecor,
                   parent: 'home',
                 },
                 {
-                  label: CategoryEnum.HomeAppliance,
+                  label: translate(
+                    `categories.${CategoryEnum.HomeAppliance}`,
+                    lang,
+                  ),
                   value: CategoryEnum.HomeAppliance,
                   parent: 'home',
                 },
                 {
-                  label: CategoryEnum.AirConditioner,
+                  label: translate(
+                    `categories.${CategoryEnum.AirConditioner}`,
+                    lang,
+                  ),
                   value: CategoryEnum.AirConditioner,
                   parent: 'home',
                 },
                 {
-                  label: CategoryEnum.Clothe,
+                  label: translate(`categories.${CategoryEnum.Clothe}`, lang),
                   value: CategoryEnum.Clothe,
                   parent: 'home',
                 },
                 {
-                  label: CategoryEnum.Accessory,
+                  label: translate(
+                    `categories.${CategoryEnum.Accessory}`,
+                    lang,
+                  ),
                   value: CategoryEnum.Accessory,
                   parent: 'home',
                 },
                 {
-                  label: CategoryEnum.Computer,
+                  label: translate(`categories.${CategoryEnum.Computer}`, lang),
                   value: CategoryEnum.Computer,
                   parent: 'electronics',
                 },
                 {
-                  label: CategoryEnum.Game,
+                  label: translate(`categories.${CategoryEnum.Game}`, lang),
                   value: CategoryEnum.Game,
                   parent: 'electronics',
                 },
                 {
-                  label: CategoryEnum.Mobile,
+                  label: translate(`categories.${CategoryEnum.Mobile}`, lang),
                   value: CategoryEnum.Mobile,
                   parent: 'electronics',
                 },
                 {
-                  label: CategoryEnum.TV,
+                  label: translate(`categories.${CategoryEnum.TV}`, lang),
                   value: CategoryEnum.TV,
                   parent: 'electronics',
                 },
                 {
-                  label: CategoryEnum.Sport,
+                  label: translate(`categories.${CategoryEnum.Sport}`, lang),
                   value: CategoryEnum.Sport,
                   parent: 'leisure',
                 },
                 {
-                  label: CategoryEnum.Book,
+                  label: translate(`categories.${CategoryEnum.Book}`, lang),
                   value: CategoryEnum.Book,
                   parent: 'leisure',
                 },
                 {
-                  label: CategoryEnum.Toy,
+                  label: translate(`categories.${CategoryEnum.Toy}`, lang),
                   value: CategoryEnum.Toy,
                   parent: 'leisure',
                 },
                 {
-                  label: CategoryEnum.Movie,
+                  label: translate(`categories.${CategoryEnum.Movie}`, lang),
                   value: CategoryEnum.Movie,
                   parent: 'leisure',
                 },
@@ -500,16 +535,16 @@ function NewAd() {
               }}
             />
             {error && (
-              <Text style={{ color: 'red' }}>
-                {error.message || 'This field is required'}
+              <Text style={{ color: 'red', marginLeft: 15 }}>
+                {translate('error.category', lang)}
               </Text>
             )}
           </View>
         )}
-        rules={{ required: 'Choose a category for your Ad' }}
+        rules={{ required: true }}
       />
 
-      <FormLabel label='Ad Type' />
+      <FormLabel label={translate('adtype', lang)} />
       <View
         style={{
           flexDirection: 'row',
@@ -530,7 +565,7 @@ function NewAd() {
               fontSize: 14,
             }}
           >
-            For Sale
+            {translate('forsale', lang)}
           </Text>
         </View>
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -547,12 +582,12 @@ function NewAd() {
               fontSize: 14,
             }}
           >
-            Wanted
+            {translate('wanted', lang)}
           </Text>
         </View>
       </View>
 
-      <FormLabel label='Price (FDJ)' />
+      <FormLabel label={translate('price', lang)} />
       <Controller
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -567,7 +602,7 @@ function NewAd() {
                 backgroundColor: COLORS[dark ? 'dark' : 'light'].inputBG,
               },
             ]}
-            placeholder='Optional'
+            placeholder={translate('optional', lang)}
             placeholderTextColor={getLighterShade(colors.text, 0.4)}
             onBlur={() =>
               value && onChange(parseInt(value).toLocaleString('en-US'))
@@ -581,7 +616,7 @@ function NewAd() {
         rules={{ required: false }}
       />
 
-      <FormLabel label='Add Images (Up to 3)' />
+      <FormLabel label={translate('add.images', lang)} />
 
       <View style={{ flexDirection: 'row' }}>
         <>
@@ -635,7 +670,7 @@ function NewAd() {
 
       {images.length > 0 && (
         <>
-          <FormLabel label='Add a video (Up to 30 sec)' />
+          <FormLabel label={translate('add.video', lang)} />
 
           <View style={{ alignItems: 'flex-start' }}>
             {videoUri ? (
@@ -690,7 +725,7 @@ function NewAd() {
         </>
       )}
 
-      <FormLabel label='Phone' />
+      <FormLabel label={translate('phone', lang)} />
       <Controller
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -714,8 +749,8 @@ function NewAd() {
               onFocus={() => value && onChange(value.replace(/[^0-9]/g, ''))}
             />
             {error && (
-              <Text style={{ color: 'red', padding: 10 }}>
-                {error.message || 'This field is required'}
+              <Text style={{ color: 'red', padding: 10, paddingLeft: 15 }}>
+                {translate('error.phone', lang)}
               </Text>
             )}
           </>
@@ -724,19 +759,16 @@ function NewAd() {
         rules={{
           validate: (value) => {
             const phone = value?.replace(/[^0-9]/g, '') ?? ''
-            return (
-              (phone.startsWith('77') && phone.length === 8) ||
-              'A valid djiboutian phone number is required for your Ad'
-            )
+            return phone.startsWith('77') && phone.length === 8
           },
         }}
       />
 
       <View style={styles.button}>
-        <CustomButton text='Reset' onPress={resetAll} />
+        <CustomButton text={translate('reset', lang)} onPress={resetAll} />
         <CustomButton
           isSelected
-          text='Submit'
+          text={translate('submit', lang)}
           onPress={handleSubmit(onSubmit)}
         />
       </View>
@@ -753,12 +785,14 @@ const Stack = createNativeStackNavigator()
 
 function NewStack() {
   const routeName = useStore((state) => state.routeName)
+  const lang = useStore((state) => state.lang)
   const { dark } = useTheme()
 
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
         animation: 'slide_from_right',
+        title: translate(handleRoutetitle(routeName), lang),
         headerStyle: {
           backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
         },

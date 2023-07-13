@@ -21,8 +21,11 @@ import { Ionicons } from '@expo/vector-icons'
 import { adview } from '@services/log'
 import { COLORS } from '@constants/style'
 import { formatDate } from '@constants/common'
+import translate from '@lang/translate'
+import { useStore } from '@zustand/store'
 
 function Ad() {
+  const lang = useStore((state) => state.lang)
   const { dark, colors } = useTheme()
   const { params } = useRoute()
 
@@ -151,7 +154,7 @@ function Ad() {
           </Text>
           <View style={styles.detailsContainer}>
             <Text style={[styles.dateText, { color: colors.text }]}>
-              {formatDate(ad.createdAt)}
+              {formatDate(ad.createdAt, lang === 'en')}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name='eye' size={12} color={colors.text} />
@@ -172,7 +175,7 @@ function Ad() {
       >
         <CustomButton
           width={'50%'}
-          text='CALL'
+          text={translate('call', lang)}
           icon='call-outline'
           bg='#2270af'
           color='white'
