@@ -35,7 +35,7 @@ const formatFilters = (filters) => {
   if (filters.max)
     filterStr += `&filter=price||lte||${filters.max.replace(/[^0-9]/g, '')}`
   // date
-  if (filters.date && filters.date !== 'All')
+  if (filters.date && filters.date !== 'all')
     filterStr += `&filter=createdAt||gt||${formatDateOptions(
       filters.date,
     )}T00:00:00`
