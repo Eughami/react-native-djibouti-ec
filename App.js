@@ -15,7 +15,7 @@ import * as Notifications from 'expo-notifications'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import axiosInstance from '@constants/axiosInstance'
-import { errorLog, postLogs } from '@services/log'
+import { errorLog, postLogs, updateLang } from '@services/log'
 import { getLocales } from 'expo-localization'
 import translate from '@lang/translate'
 
@@ -77,6 +77,7 @@ export default function App() {
 
   useEffect(() => {
     const lang = getLocales()[0].languageCode
+    updateLang(lang)
     setLang(lang)
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
@@ -108,7 +109,7 @@ export default function App() {
           const device = await axiosInstance({
             method: 'POST',
             url: '/devices',
-            data: { ...Device, token },
+            data: { ...Device, token, lang },
           })
           log['isFirstTime'] = true
           log['apiCall'] = performance.now() - log['tt']

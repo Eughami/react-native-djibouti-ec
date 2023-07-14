@@ -1,7 +1,9 @@
 import { API_BASE_URL } from '@constants/api'
+import { whichTextToShow } from '@constants/common'
 import { ROUTES } from '@constants/routes'
 import { COLORS, formatPrice } from '@constants/style'
 import { useNavigation, useTheme } from '@react-navigation/native'
+import { useStore } from '@zustand/store'
 import * as React from 'react'
 import {
   Text,
@@ -17,6 +19,7 @@ function Preview(item) {
   const colorScheme = useColorScheme()
   const { dark } = useTheme()
   const { title, price, isPremium, attachment = [] } = item
+  const lang = useStore((state) => state.lang)
 
   let imageUrl = undefined
   if (attachment.length > 0) {
@@ -70,7 +73,7 @@ function Preview(item) {
 
           <View style={styles.textContainer}>
             <Text numberOfLines={1} style={styles.text}>
-              {title}
+              {whichTextToShow(item, lang)}
             </Text>
           </View>
         </Pressable>

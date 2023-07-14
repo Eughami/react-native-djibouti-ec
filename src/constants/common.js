@@ -63,3 +63,13 @@ export const formatDate = (date, en = true) => {
     en ? monthListEN[month] : monthListFR[month]
   } ${dd.getFullYear()}`
 }
+
+export const whichTextToShow = (ad, lang, isDescription = false) => {
+  let defaultKey = isDescription ? 'description' : 'title'
+  const isSameLanguage = ad.lang === lang
+  let key
+
+  if (isDescription) key = isSameLanguage ? defaultKey : 'subdesc'
+  else key = isSameLanguage ? defaultKey : 'subtitle'
+  return ad[key] || ad[defaultKey]
+}

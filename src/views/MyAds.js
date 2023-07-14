@@ -23,7 +23,7 @@ import { COLORS } from '@constants/style'
 import { Ionicons } from '@expo/vector-icons'
 import { useStore } from '@zustand/store'
 import translate from '@lang/translate'
-import { handleRoutetitle } from '@constants/common'
+import { handleRoutetitle, whichTextToShow } from '@constants/common'
 
 function MyProfile() {
   const { dark, colors } = useTheme()
@@ -110,10 +110,10 @@ function MyProfile() {
             numberOfLines={1}
             style={{ color: colors.text, fontWeight: 'bold', fontSize: 16 }}
           >
-            {data.item.title}
+            {whichTextToShow(data.item, lang)}
           </Text>
           <Text numberOfLines={1} style={{ color: colors.text }}>
-            {data.item.description}
+            {whichTextToShow(data.item, lang, true)}
           </Text>
         </View>
       </View>

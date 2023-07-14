@@ -20,7 +20,7 @@ import { useQuery } from 'react-query'
 import { Ionicons } from '@expo/vector-icons'
 import { adview } from '@services/log'
 import { COLORS } from '@constants/style'
-import { formatDate } from '@constants/common'
+import { formatDate, whichTextToShow } from '@constants/common'
 import translate from '@lang/translate'
 import { useStore } from '@zustand/store'
 
@@ -56,7 +56,7 @@ function Ad() {
             { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
           ]}
         >
-          {ad.title}
+          {whichTextToShow(ad, lang)}
         </Text>
         {!ad?.attachment?.length ? (
           <View
@@ -141,17 +141,21 @@ function Ad() {
         </View>
 
         <Text style={[styles.description, { color: colors.text }]}>
-          {ad.description}
+          {whichTextToShow(ad, lang, true)}
         </Text>
         <View style={styles.priceContainer}>
-          <Text
-            style={[
-              styles.priceText,
-              { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
-            ]}
-          >
-            {parseInt(ad.price).toLocaleString('en-US')} FDJ
-          </Text>
+          {ad.price ? (
+            <Text
+              style={[
+                styles.priceText,
+                { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
+              ]}
+            >
+              {parseInt(ad.price).toLocaleString('en-US')} FDJ
+            </Text>
+          ) : (
+            <Text />
+          )}
           <View style={styles.detailsContainer}>
             <Text style={[styles.dateText, { color: colors.text }]}>
               {formatDate(ad.createdAt, lang === 'en')}

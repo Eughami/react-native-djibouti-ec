@@ -79,10 +79,8 @@ function Search({ navigation }) {
   } = useQuery('search-ads', () => searchAds(page, filters, sort.value), {
     enabled: false,
     onSuccess: (data) => {
-      if (data?.data?.length) {
-        setHasMore(page < data?.pageCount)
-        setList((list) => [...list, ...data.data])
-      }
+      setHasMore(page < data?.pageCount)
+      setList((list) => [...list, ...data.data])
     },
   })
 
@@ -118,9 +116,10 @@ function Search({ navigation }) {
   }
 
   const handleOptionSelect = (option) => {
+    setIsOpen(false)
+    if (option === sort) return
     setSort(option)
     setInitialRender(false)
-    setIsOpen(false)
   }
 
   const handleEndReached = () => {

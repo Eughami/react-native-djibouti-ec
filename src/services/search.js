@@ -13,35 +13,56 @@ export const searchAds = (page, filters = {}, sort = null) => {
       filters,
     )}`,
   })
-    .then((res) => res)
-    .catch((err) =>
-      errorLog({ ...err, msg: 'something went wrong on search query' }),
-    )
+    .then((res) => {
+      console.log('Res', res)
+      return res
+    })
+    .catch((err) => {
+      console.log(err)
+      errorLog({ ...err, msg: 'something went wrong on search query' })
+    })
 }
 
 const formatFilters = (filters) => {
-  let filterStr = ''
+  let arr = []
   // keyword
-  if (filters.keyword)
-    filterStr += `&filter=title||$contL||${filters.keyword}&filter=description||$contL||${filters.keyword}`
+  if (filters.keyword) {
+    arr.push({
+      $or: [
+        { title: { $contL: filters.keyword } },
+        { description: { $contL: filters.keyword } },
+        { subtitle: { $contL: filters.keyword } },
+        { subdesc: { $contL: filters.keyword } },
+      ],
+    })
+  }
   // categories
   if (filters.categories?.length > 0)
-    filterStr += `&filter=category.name||in||${filters.categories.toString()}`
+    arr.push({
+      'category.name': { in: filters.categories },
+    })
   //  adtype
-  if (filters.adType) filterStr += `&filter=isService||eq||${!filters.adType}`
+  if (filters.adType)
+    arr.push({
+      isService: !filters.adType,
+    })
+
   // price min & max
   if (filters.min)
-    filterStr += `&filter=price||gte||${filters.min.replace(/[^0-9]/g, '')}`
+    arr.push({
+      price: { gte: filters.min.replace(/[^0-9]/g, '') },
+    })
   if (filters.max)
-    filterStr += `&filter=price||lte||${filters.max.replace(/[^0-9]/g, '')}`
+    arr.push({ price: { lte: filters.max.replace(/[^0-9]/g, '') } })
   // date
   if (filters.date && filters.date !== 'all')
-    filterStr += `&filter=createdAt||gt||${formatDateOptions(
-      filters.date,
-    )}T00:00:00`
+    arr.push({
+      createdAt: { gt: `${formatDateOptions(filters.date)}T00:00:00` },
+    })
 
-  console.log({ filters, filterStr })
-  return filterStr
+  const res = `&s=${JSON.stringify({ $and: arr })}`
+  console.log(res)
+  return res
 }
 
 const formatDateOptions = (option) => {

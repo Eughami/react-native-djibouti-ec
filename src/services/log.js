@@ -25,10 +25,21 @@ export const adview = async (adIds = []) => {
   }).catch((err) => errorLog(err, deviceId))
 }
 
+export const updateLang = async (lang) => {
+  const deviceId = await AsyncStorage.getItem('deviceId')
+  if (!deviceId) return
+
+  return axiosInstance({
+    method: 'POST',
+    url: '/devices/lang',
+    data: { deviceId, lang },
+  }).catch((err) => errorLog(err, deviceId))
+}
+
 export const errorLog = (err, deviceId) => {
   return axiosInstance({
     method: 'POST',
     url: '/ads/startup',
-    data: { type: 'ERROR', payload: err, deviceId },
+    data: { type: 'ERROR', payload: err?.response?.data || err, deviceId },
   }).catch((err) => console.log('Error log not sent :', err))
 }
