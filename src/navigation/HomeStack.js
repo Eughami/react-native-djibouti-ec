@@ -10,18 +10,20 @@ import Home from '@views/Home'
 import { Ionicons } from '@expo/vector-icons'
 import { useStore } from '@zustand/store'
 import { handleRoutetitle } from '@constants/common'
+import translate from '@lang/translate'
 
 const Stack = createNativeStackNavigator()
 
 function HomeStack() {
   const routeName = useStore((state) => state.routeName)
   const theme = useStore((state) => state.theme)
+  const lang = useStore((state) => state.lang)
 
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerShown: true,
-        title: handleRoutetitle(routeName),
+        animation: 'slide_from_right',
+        title: translate(handleRoutetitle(routeName), lang),
         headerStyle: { backgroundColor: COLORS[theme].dominant },
         headerTintColor: 'white',
         headerLeft: ({ tintColor }) => (

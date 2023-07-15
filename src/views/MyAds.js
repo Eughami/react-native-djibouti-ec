@@ -13,6 +13,8 @@ import {
   View,
   ToastAndroid,
   Image,
+  Modal,
+  Pressable,
 } from 'react-native'
 
 import { SwipeListView } from 'react-native-swipe-list-view'
@@ -22,15 +24,23 @@ import { API_BASE_URL } from '@constants/api'
 import { COLORS } from '@constants/style'
 import { Ionicons } from '@expo/vector-icons'
 import { useStore } from '@zustand/store'
+import translate from '@lang/translate'
+import { handleRoutetitle, whichTextToShow } from '@constants/common'
+import CustomButton from '@components/CustomButton'
 
 function MyProfile() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [delId, setDelId] = useState(null)
   const { dark, colors } = useTheme()
+  const lang = useStore((state) => state.lang)
   const { navigate } = useNavigation()
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
       rowMap[rowKey].closeRow()
     }
   }
+
+  const toggleFunc = () => setIsOpen(!isOpen)
 
   const {
     isLoading,
@@ -44,11 +54,14 @@ function MyProfile() {
     {
       onSuccess: (deleteData) => {
         if (!deleteData) {
-          ToastAndroid.showWithGravity(
-            'Ad deleted successfully',
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          )
+          setDelId(null)
+          toggleFunc()
+          // ? Show toast
+          // ToastAndroid.showWithGravity(
+          //   'Ad deleted successfully',
+          //   ToastAndroid.SHORT,
+          //   ToastAndroid.CENTER,
+          // )
           refetch()
         }
       },
@@ -79,8 +92,8 @@ function MyProfile() {
         <Image
           style={{
             marginHorizontal: 10,
-            width: 70,
-            height: 70,
+            width: 60,
+            height: 60,
             resizeMode: 'contain',
           }}
           source={
@@ -100,17 +113,17 @@ function MyProfile() {
             // borderColor: 'red',
             justifyContent: 'space-around',
             // borderWidth: 1,
-            height: 60,
+            height: 55,
           }}
         >
           <Text
             numberOfLines={1}
             style={{ color: colors.text, fontWeight: 'bold', fontSize: 16 }}
           >
-            {data.item.title}
+            {whichTextToShow(data.item, lang)}
           </Text>
           <Text numberOfLines={1} style={{ color: colors.text }}>
-            {data.item.description}
+            {whichTextToShow(data.item, lang, true)}
           </Text>
         </View>
       </View>
@@ -118,19 +131,36 @@ function MyProfile() {
   )
 
   const renderHiddenItem = (data, rowMap) => (
-    <View style={[styles.rowBack, {}]}>
-      <IconButton
-        color='red'
-        icon='trash-outline'
-        size={25}
-        onPress={() => deleteRow(rowMap, data.item.id)}
-      />
-      {/* <TouchableOpacity
-        style={[styles.backRightBtn, styles.backRightBtnRight]}
-        onPress={() => deleteRow(rowMap, data.item.id)}
+    <View
+      style={[
+        styles.rowBack,
+        {
+          marginLeft: 20,
+          backgroundColor: COLORS[dark ? 'dark' : 'light'].delete,
+        },
+      ]}
+    >
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 5,
+        }}
       >
-        <Text style={styles.backTextWhite}>Delete</Text>
-      </TouchableOpacity> */}
+        <IconButton
+          color='white'
+          icon='trash-outline'
+          size={25}
+          nopad
+          onPress={() => {
+            setDelId(data.item.id)
+            toggleFunc()
+          }}
+        />
+        <Text style={{ fontSize: 10, color: 'white', fontWeight: 'bold' }}>
+          {translate('delete', lang)}
+        </Text>
+      </View>
     </View>
   )
 
@@ -138,31 +168,81 @@ function MyProfile() {
   if (loading) return <Loader />
 
   return (
-    <SwipeListView
-      style={{
-        flex: 1,
-        padding: 10,
-        backgroundColor: colors.card,
-      }}
-      data={ads.data}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      renderHiddenItem={renderHiddenItem}
-      ListEmptyComponent={
-        <Text style={[styles.emptyText, { color: colors.text }]}>
-          You have not posted any ads
-        </Text>
-      }
-      disableRightSwipe
-      rightOpenValue={-50}
-      previewRowKey={ads.data?.[0]?.id}
-      previewOpenValue={-50}
-      previewOpenDelay={3000}
-      previewDuration={1000}
-      onRowDidOpen={onRowDidOpen}
-      swipeRowStyle={styles.swipedStyle}
-      ItemSeparatorComponent={<View style={{ height: 15 }}></View>}
-    />
+    <View style={{ flex: 1 }}>
+      <SwipeListView
+        style={{
+          flex: 1,
+          padding: 10,
+          backgroundColor: colors.card,
+        }}
+        data={ads?.data}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        renderHiddenItem={renderHiddenItem}
+        ListEmptyComponent={
+          <Text style={[styles.emptyText, { color: colors.text }]}>
+            {translate('error.noads', lang)}
+          </Text>
+        }
+        disableRightSwipe
+        rightOpenValue={-60}
+        previewRowKey={ads?.data?.[0]?.id}
+        previewOpenValue={-60}
+        previewOpenDelay={3000}
+        previewDuration={1000}
+        onRowDidOpen={onRowDidOpen}
+        swipeRowStyle={styles.swipedStyle}
+        ItemSeparatorComponent={<View style={{ height: 15 }}></View>}
+      />
+      <Modal
+        visible={isOpen}
+        animationType='fade'
+        transparent={true}
+        onRequestClose={toggleFunc}
+      >
+        <Pressable
+          onPress={toggleFunc}
+          style={{
+            flex: 1,
+            backgroundColor: dark ? 'rgba(1, 1, 1, 0.6)' : 'rgba(0, 0, 0, 0.6)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: dark ? colors.border : colors.card,
+              padding: 16,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: 'bold',
+                marginVertical: 10,
+              }}
+            >
+              {translate('warning.delete', lang)}
+            </Text>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <CustomButton
+                onPress={toggleFunc}
+                text={translate('cancel', lang)}
+              />
+              <CustomButton
+                onPress={() => deleteMutation(delId)}
+                text={translate('yes', lang)}
+                color='white'
+                bg={COLORS[dark ? 'dark' : 'light'].delete}
+              />
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
+    </View>
   )
 }
 // TODO.Add toggle for notification and some view for the favorite categories
@@ -170,11 +250,13 @@ const Stack = createNativeStackNavigator()
 
 function ProfileStack() {
   const routeName = useStore((state) => state.routeName)
+  const lang = useStore((state) => state.lang)
   const { dark } = useTheme()
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
-        headerShown: true,
+        animation: 'slide_from_right',
+        title: translate(handleRoutetitle(routeName), lang),
         headerStyle: {
           backgroundColor: COLORS[dark ? 'dark' : 'light'].dominant,
         },
@@ -196,7 +278,7 @@ function ProfileStack() {
         ),
       })}
     >
-      <Stack.Screen name={ROUTES.MY_ADS} component={MyProfile} />
+      <Stack.Screen name={ROUTES.PROFILE} component={MyProfile} />
       <Stack.Screen name={ROUTES.HOME_AD} component={Ad} />
     </Stack.Navigator>
   )
@@ -219,10 +301,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingLeft: 15,
-    height: 80,
+    // backgroundColor: '#8B0000', //dark
+    backgroundColor: '#DC143C', //light
+    height: 70,
   },
   swipedStyle: {
-    height: 80,
+    height: 70,
     borderRadius: 20,
     overflow: 'hidden',
   },
@@ -231,7 +315,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     borderRadius: 20,
-    height: 80,
+    height: 70,
     overflow: 'hidden',
   },
 })

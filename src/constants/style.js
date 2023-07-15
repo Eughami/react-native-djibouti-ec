@@ -1,39 +1,25 @@
 export const COLORS = {
   light: {
-    dominant: '#FF8C00',
+    dominant: '#FF8C00', //light
     secondary: '#006D6F',
     accent: '#FDF6E3',
-    dominantShade1: '#FFB84D',
+    dominantShade1: '#d17300',
     dominantShade2: '#FFD19A',
     dominantShade3: '#FFE7CC',
     placeholder: '#535353',
     inputBG: '#F2F2F2',
+    delete: '#DC143C',
   },
   dark: {
     dominant: '#FF7F00',
-    secondary: '#001F4E',
+    secondary: '#006D6F',
     accent: '#EDEDED',
-    dominantShade1: '#FF9133',
+    dominantShade1: '#d3792a', //dark
     dominantShade2: '#FFA766',
     dominantShade3: '#FFC499',
     placeholder: '#8a8a8a',
     inputBG: '#2b2e3dff',
-  },
-  primary: {
-    color: '#af5f14',
-    colorLight: '#f8f0f7',
-    dark100: '#af5f14',
-    dark200: '#af5f14',
-    dark300: '#af5f14',
-    dark400: '#af5f14',
-    dark500: '#af5f14',
-    dark600: '#af5f14',
-    light100: '#af5f14',
-    light200: '#af5f14',
-    light300: '#af5f14',
-    light400: '#af5f14',
-    light500: '#af5f14',
-    light600: '#af5f14',
+    delete: '#8B0000',
   },
 }
 

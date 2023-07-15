@@ -9,6 +9,7 @@
       "@zustand/*":["src/zustand/*"],
       "@assets/*":["assets/*"],
       "@navigation/*":["src/navigation/*"],
+      "@lang/*":["src/lang/*"],
     }
   }
 }

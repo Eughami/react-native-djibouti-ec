@@ -1,7 +1,9 @@
 import { API_BASE_URL } from '@constants/api'
+import { whichTextToShow } from '@constants/common'
 import { ROUTES } from '@constants/routes'
 import { COLORS, formatPrice } from '@constants/style'
 import { useNavigation, useTheme } from '@react-navigation/native'
+import { useStore } from '@zustand/store'
 import * as React from 'react'
 import {
   Text,
@@ -17,6 +19,7 @@ function Preview(item) {
   const colorScheme = useColorScheme()
   const { dark } = useTheme()
   const { title, price, isPremium, attachment = [] } = item
+  const lang = useStore((state) => state.lang)
 
   let imageUrl = undefined
   if (attachment.length > 0) {
@@ -24,17 +27,20 @@ function Preview(item) {
   }
   // console.log(`${API_BASE_URL}/files/${attachment?.[0]?.path}`)
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, item.small && { margin: 8 }]}>
       <View style={[styles.container, styles[colorScheme]]}>
         <Pressable
           onPress={() => {
             navigation.navigate(ROUTES.HOME_AD, { id: item.id })
           }}
+          style={({ pressed }) => pressed && { opacity: 0.5 }}
         >
           {imageUrl ? (
             <Image
               style={styles.image}
-              source={{ uri: `${API_BASE_URL}/files/${imageUrl}` }}
+              source={{
+                uri: `${API_BASE_URL}/files/${imageUrl}`,
+              }}
             />
           ) : (
             <Image
@@ -70,7 +76,7 @@ function Preview(item) {
 
           <View style={styles.textContainer}>
             <Text numberOfLines={1} style={styles.text}>
-              {title}
+              {whichTextToShow(item, lang)}
             </Text>
           </View>
         </Pressable>
@@ -133,7 +139,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10, // Adjust the top position as per your requirement
     left: -25, // Adjust the left position as per your requirement
-    backgroundColor: COLORS.primary.color, // Customize the ribbon background color
     paddingHorizontal: 10,
     paddingVertical: 5,
     transform: [{ rotate: '-45deg' }],
@@ -149,7 +154,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     // top: 10, // Adjust the top position as per your requirement
     right: 10, // Adjust the left position as per your requirement
-    backgroundColor: '#FF6F61', // Customize the ribbon background color
     paddingHorizontal: 10,
     paddingVertical: 5,
     // transform: [{ rotate: '45deg' }],

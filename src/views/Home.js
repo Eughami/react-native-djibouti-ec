@@ -17,6 +17,7 @@ import Loader from '@components/Loader'
 import { COLORS } from '@constants/style'
 import { useEffect } from 'react'
 import { useStore } from '@zustand/store'
+import translate from '@lang/translate'
 
 function Title({ text }) {
   const { colors } = useTheme()
@@ -36,27 +37,10 @@ function Title({ text }) {
   )
 }
 
-function TopCategories() {
-  return (
-    <View
-      style={{
-        // backgroundColor: 'lightgrey',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-      }}
-    >
-      {HomeCategories.map((item) => (
-        <Avatar icon={item.icon} title={item.name} key={item.name} />
-      ))}
-    </View>
-  )
-}
-
 function HomePage() {
   const { colors } = useTheme()
   const setFavCat = useStore((state) => state.setFavCat)
+  const lang = useStore((state) => state.lang)
 
   const {
     isLoading,
@@ -84,66 +68,89 @@ function HomePage() {
     return () => subscription.remove()
   }, [])
 
+  function TopCategories() {
+    return (
+      <View
+        style={{
+          // backgroundColor: 'lightgrey',
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        }}
+      >
+        {HomeCategories.map((item) => (
+          <Avatar
+            icon={item.icon}
+            category={item.name}
+            title={translate(`categories.${item.name}`, lang)}
+            key={item.name}
+          />
+        ))}
+      </View>
+    )
+  }
+
+  function HomeAds({ loading, ads, refetch }) {
+    const width = Dimensions.get('window').width
+    const { dark, colors } = useTheme()
+    if (loading)
+      return (
+        <View style={{ minHeight: 200 }}>
+          <Loader />
+        </View>
+      )
+    return (
+      <>
+        {!ads || ads.data.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              height: 200,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ color: colors.text, marginBottom: 10 }}>
+              {translate('error.ads', lang)}
+            </Text>
+            <Button
+              title={translate('retry', lang)}
+              color={COLORS[dark ? 'dark' : 'light'].secondary}
+              onPress={refetch}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
+            {ads.data.map((item) => (
+              <View
+                key={item.id}
+                style={{
+                  width: width > 500 ? '50%' : '100%',
+                }}
+              >
+                <Preview {...item} />
+              </View>
+            ))}
+          </View>
+        )}
+      </>
+    )
+  }
+
   const loading = isFetching || isLoading
   return (
     <ScrollView style={{ backgroundColor: colors.card }}>
-      <Title text='Categories' />
+      <Title text={translate('categories', lang)} />
       <TopCategories />
-      <Title text='Latest Ads' />
+      <Title text={translate('routes.Home.LatestAd', lang)} />
       <HomeAds loading={loading} refetch={refetch} ads={ads} />
     </ScrollView>
-  )
-}
-
-function HomeAds({ loading, ads, refetch }) {
-  const width = Dimensions.get('window').width
-  const { dark, colors } = useTheme()
-  if (loading)
-    return (
-      <View style={{ minHeight: 200 }}>
-        <Loader />
-      </View>
-    )
-  return (
-    <>
-      {!ads || ads.data.length === 0 ? (
-        <View
-          style={{
-            flex: 1,
-            height: 200,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Text style={{ color: colors.text, marginBottom: 10 }}>
-            Could not fetch any ads ...
-          </Text>
-          <Button
-            title='refetch'
-            color={COLORS[dark ? 'dark' : 'light'].dominantShade1}
-            onPress={refetch}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-          }}
-        >
-          {ads.data.map((item) => (
-            <View
-              key={item.id}
-              style={{
-                width: width > 500 ? '50%' : '100%',
-              }}
-            >
-              <Preview {...item} />
-            </View>
-          ))}
-        </View>
-      )}
-    </>
   )
 }
 

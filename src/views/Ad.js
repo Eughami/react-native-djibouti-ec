@@ -5,7 +5,7 @@ import { ImageZoom } from '@likashefqet/react-native-image-zoom'
 import { useRoute, useTheme } from '@react-navigation/native'
 import { getProduct } from '@services/home'
 import { ResizeMode, Video } from 'expo-av'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Dimensions,
   Image,
@@ -20,9 +20,12 @@ import { useQuery } from 'react-query'
 import { Ionicons } from '@expo/vector-icons'
 import { adview } from '@services/log'
 import { COLORS } from '@constants/style'
-import { formatDate } from '@constants/common'
+import { formatDate, whichTextToShow } from '@constants/common'
+import translate from '@lang/translate'
+import { useStore } from '@zustand/store'
 
 function Ad() {
+  const lang = useStore((state) => state.lang)
   const { dark, colors } = useTheme()
   const { params } = useRoute()
 
@@ -33,7 +36,6 @@ function Ad() {
   const video = useRef(null)
 
   const [index, setIndex] = useState(0)
-  console.log({ width })
   // TODO. Add a view with device details (on mount ??????--on scroll--?????)
 
   const {
@@ -54,7 +56,7 @@ function Ad() {
             { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
           ]}
         >
-          {ad.title}
+          {whichTextToShow(ad, lang)}
         </Text>
         {!ad?.attachment?.length ? (
           <View
@@ -104,11 +106,8 @@ function Ad() {
                     ref={video}
                     // isMuted
                     style={{
-                      margin: 10,
                       width: '100%',
                       height: '100%',
-                      // borderColor: colors.border,
-                      // borderWidth: 1,
                     }}
                     source={{
                       uri: `${API_BASE_URL}/files/${ad.attachment[index].path}`,
@@ -142,20 +141,24 @@ function Ad() {
         </View>
 
         <Text style={[styles.description, { color: colors.text }]}>
-          {ad.description}
+          {whichTextToShow(ad, lang, true)}
         </Text>
         <View style={styles.priceContainer}>
-          <Text
-            style={[
-              styles.priceText,
-              { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
-            ]}
-          >
-            {parseInt(ad.price).toLocaleString('en-US')} FDJ
-          </Text>
+          {ad.price ? (
+            <Text
+              style={[
+                styles.priceText,
+                { color: COLORS[dark ? 'dark' : 'light'].dominantShade1 },
+              ]}
+            >
+              {parseInt(ad.price).toLocaleString('en-US')} FDJ
+            </Text>
+          ) : (
+            <Text />
+          )}
           <View style={styles.detailsContainer}>
             <Text style={[styles.dateText, { color: colors.text }]}>
-              {formatDate(ad.createdAt)}
+              {formatDate(ad.createdAt, lang === 'en')}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name='eye' size={12} color={colors.text} />
@@ -176,7 +179,7 @@ function Ad() {
       >
         <CustomButton
           width={'50%'}
-          text='CALL'
+          text={translate('call', lang)}
           icon='call-outline'
           bg='#2270af'
           color='white'
@@ -210,7 +213,6 @@ const styles = StyleSheet.create({
   title: {
     paddingVertical: 10,
     fontSize: 24,
-    color: COLORS.primary.color,
   },
   pagination: {
     flexDirection: 'row',
@@ -230,7 +232,6 @@ const styles = StyleSheet.create({
   priceText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.primary.color,
   },
   detailsContainer: {
     flexDirection: 'row',

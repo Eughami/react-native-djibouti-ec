@@ -2,6 +2,8 @@ import { sortOptions } from '@constants/common'
 import { useTheme } from '@react-navigation/native'
 import { Modal, Pressable, Text, View } from 'react-native'
 import SelectedOption from './SelectedOption'
+import { useStore } from '@zustand/store'
+import translate from '@lang/translate'
 
 function SortOptionsModal({
   isOpen,
@@ -10,6 +12,7 @@ function SortOptionsModal({
   handleSelection,
 }) {
   const { colors, dark } = useTheme()
+  const lang = useStore((state) => state.lang)
   return (
     <Modal visible={isOpen} transparent={true} onRequestClose={toggleFunc}>
       <Pressable
@@ -35,11 +38,11 @@ function SortOptionsModal({
               marginVertical: 10,
             }}
           >
-            Select which Ads you would like to see first
+            {translate('sort.title', lang)}
           </Text>
           {sortOptions.map((option) => (
             <SelectedOption
-              text={option.label}
+              text={translate(`sort.${option.label}`, lang)}
               key={option.value}
               toggleFunc={() => handleSelection(option)}
               isSelected={currentSelection?.value === option.value}
