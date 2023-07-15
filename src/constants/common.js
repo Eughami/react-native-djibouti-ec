@@ -23,6 +23,9 @@ export const sortOptions = [
   { value: 'price,ASC', label: 'cheapest' },
 ]
 
+export const themeOptions = ['auto', 'light', 'dark']
+export const languageOptions = ['auto', 'fr', 'en']
+
 export const DateOptions = ['today', 'week', 'month', 'all']
 
 const monthListEN = [

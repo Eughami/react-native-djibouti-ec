@@ -1,15 +1,24 @@
 {
   "expo": {
-    "name": "dahabo-android",
+    "name": "Aaway",
     "slug": "djibouti-ec",
     "version": "1.0.0",
-    "orientation": "automatic",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#FF8C00"
+    },
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#FF8C00",
+      "dark": {
+        "image": "./assets/splash.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#d3792a"
+      }
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {

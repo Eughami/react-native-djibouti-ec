@@ -40,6 +40,6 @@ export const errorLog = (err, deviceId) => {
   return axiosInstance({
     method: 'POST',
     url: '/ads/startup',
-    data: { type: 'ERROR', payload: err?.response?.data || err, deviceId },
+    data: { type: 'ERROR', payload: err, deviceId },
   }).catch((err) => console.log('Error log not sent :', err))
 }

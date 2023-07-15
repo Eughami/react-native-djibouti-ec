@@ -1,6 +1,13 @@
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import { useState } from 'react'
-import { Image, LayoutAnimation, StyleSheet, Text, View } from 'react-native'
+import {
+  Image,
+  LayoutAnimation,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
 import { ROUTES } from '@constants/routes'
@@ -14,6 +21,7 @@ import translate from '@lang/translate'
 
 function CustomDrawerContent(props) {
   const { colors: themeColors, dark } = useTheme()
+  const [isLang, setIsLang] = useState(false)
   const lang = useStore((state) => state.lang)
   const theme = useStore((state) => state.theme)
   const swithTheme = useStore((state) => state.swithTheme)
@@ -466,23 +474,39 @@ function CustomDrawerContent(props) {
           icon={dark ? 'moon-outline' : 'sunny-outline'}
           onPress={() => {
             // TODO.maybe handle it in a modal in the future for more options
-            // props.navigation.toggleDrawer()
-            // toggleModal()
-            const newTheme = theme === 'light' ? 'dark' : 'light'
-            AsyncStorage.setItem('theme', newTheme)
-            swithTheme(newTheme)
+            props.navigation.toggleDrawer()
+            toggleModal()
+            setIsLang(false)
+            // const newTheme = theme === 'light' ? 'dark' : 'light'
+            // AsyncStorage.setItem('theme', newTheme)
+            // swithTheme(newTheme)
           }}
         />
-        <Image
-          source={
-            lang === 'en'
-              ? require('@assets/flags/en-flag.png')
-              : require('@assets/flags/fr-flag.png')
-          }
-          style={styles.flagStlye}
-        />
+        <Pressable
+          style={({ pressed }) => pressed && { opacity: 0.7 }}
+          onPress={() => {
+            props.navigation.toggleDrawer()
+            toggleModal()
+            setIsLang(true)
+          }}
+        >
+          <Image
+            source={
+              lang === 'en'
+                ? require('@assets/flags/en-flag.png')
+                : require('@assets/flags/fr-flag.png')
+            }
+            style={styles.flagStlye}
+          />
+        </Pressable>
       </View>
-      <LangModal modalVisible={showModal} toggleModal={toggleModal} />
+      {showModal && (
+        <LangModal
+          toggleFunc={toggleModal}
+          isOpen={showModal}
+          isLang={isLang}
+        />
+      )}
     </View>
   )
 }

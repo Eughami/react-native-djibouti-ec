@@ -1,6 +1,6 @@
 export const COLORS = {
   light: {
-    dominant: '#FF8C00',
+    dominant: '#FF8C00', //light
     secondary: '#006D6F',
     accent: '#FDF6E3',
     dominantShade1: '#d17300',
@@ -8,16 +8,18 @@ export const COLORS = {
     dominantShade3: '#FFE7CC',
     placeholder: '#535353',
     inputBG: '#F2F2F2',
+    delete: '#DC143C',
   },
   dark: {
     dominant: '#FF7F00',
     secondary: '#006D6F',
     accent: '#EDEDED',
-    dominantShade1: '#d3792a',
+    dominantShade1: '#d3792a', //dark
     dominantShade2: '#FFA766',
     dominantShade3: '#FFC499',
     placeholder: '#8a8a8a',
     inputBG: '#2b2e3dff',
+    delete: '#8B0000',
   },
 }
 

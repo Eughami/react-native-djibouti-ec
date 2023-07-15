@@ -13,6 +13,8 @@ import {
   View,
   ToastAndroid,
   Image,
+  Modal,
+  Pressable,
 } from 'react-native'
 
 import { SwipeListView } from 'react-native-swipe-list-view'
@@ -24,8 +26,11 @@ import { Ionicons } from '@expo/vector-icons'
 import { useStore } from '@zustand/store'
 import translate from '@lang/translate'
 import { handleRoutetitle, whichTextToShow } from '@constants/common'
+import CustomButton from '@components/CustomButton'
 
 function MyProfile() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [delId, setDelId] = useState(null)
   const { dark, colors } = useTheme()
   const lang = useStore((state) => state.lang)
   const { navigate } = useNavigation()
@@ -34,6 +39,8 @@ function MyProfile() {
       rowMap[rowKey].closeRow()
     }
   }
+
+  const toggleFunc = () => setIsOpen(!isOpen)
 
   const {
     isLoading,
@@ -47,11 +54,14 @@ function MyProfile() {
     {
       onSuccess: (deleteData) => {
         if (!deleteData) {
-          ToastAndroid.showWithGravity(
-            'Ad deleted successfully',
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          )
+          setDelId(null)
+          toggleFunc()
+          // ? Show toast
+          // ToastAndroid.showWithGravity(
+          //   'Ad deleted successfully',
+          //   ToastAndroid.SHORT,
+          //   ToastAndroid.CENTER,
+          // )
           refetch()
         }
       },
@@ -121,7 +131,15 @@ function MyProfile() {
   )
 
   const renderHiddenItem = (data, rowMap) => (
-    <View style={[styles.rowBack, { marginLeft: 20 }]}>
+    <View
+      style={[
+        styles.rowBack,
+        {
+          marginLeft: 20,
+          backgroundColor: COLORS[dark ? 'dark' : 'light'].delete,
+        },
+      ]}
+    >
       <View
         style={{
           alignItems: 'center',
@@ -133,7 +151,11 @@ function MyProfile() {
           color='white'
           icon='trash-outline'
           size={25}
-          onPress={() => deleteRow(rowMap, data.item.id)}
+          nopad
+          onPress={() => {
+            setDelId(data.item.id)
+            toggleFunc()
+          }}
         />
         <Text style={{ fontSize: 10, color: 'white', fontWeight: 'bold' }}>
           {translate('delete', lang)}
@@ -146,31 +168,81 @@ function MyProfile() {
   if (loading) return <Loader />
 
   return (
-    <SwipeListView
-      style={{
-        flex: 1,
-        padding: 10,
-        backgroundColor: colors.card,
-      }}
-      data={ads?.data}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      renderHiddenItem={renderHiddenItem}
-      ListEmptyComponent={
-        <Text style={[styles.emptyText, { color: colors.text }]}>
-          {translate('error.noads', lang)}
-        </Text>
-      }
-      disableRightSwipe
-      rightOpenValue={-60}
-      previewRowKey={ads?.data?.[0]?.id}
-      previewOpenValue={-60}
-      previewOpenDelay={3000}
-      previewDuration={1000}
-      onRowDidOpen={onRowDidOpen}
-      swipeRowStyle={styles.swipedStyle}
-      ItemSeparatorComponent={<View style={{ height: 15 }}></View>}
-    />
+    <View style={{ flex: 1 }}>
+      <SwipeListView
+        style={{
+          flex: 1,
+          padding: 10,
+          backgroundColor: colors.card,
+        }}
+        data={ads?.data}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        renderHiddenItem={renderHiddenItem}
+        ListEmptyComponent={
+          <Text style={[styles.emptyText, { color: colors.text }]}>
+            {translate('error.noads', lang)}
+          </Text>
+        }
+        disableRightSwipe
+        rightOpenValue={-60}
+        previewRowKey={ads?.data?.[0]?.id}
+        previewOpenValue={-60}
+        previewOpenDelay={3000}
+        previewDuration={1000}
+        onRowDidOpen={onRowDidOpen}
+        swipeRowStyle={styles.swipedStyle}
+        ItemSeparatorComponent={<View style={{ height: 15 }}></View>}
+      />
+      <Modal
+        visible={isOpen}
+        animationType='fade'
+        transparent={true}
+        onRequestClose={toggleFunc}
+      >
+        <Pressable
+          onPress={toggleFunc}
+          style={{
+            flex: 1,
+            backgroundColor: dark ? 'rgba(1, 1, 1, 0.6)' : 'rgba(0, 0, 0, 0.6)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: dark ? colors.border : colors.card,
+              padding: 16,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: 'bold',
+                marginVertical: 10,
+              }}
+            >
+              {translate('warning.delete', lang)}
+            </Text>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <CustomButton
+                onPress={toggleFunc}
+                text={translate('cancel', lang)}
+              />
+              <CustomButton
+                onPress={() => deleteMutation(delId)}
+                text={translate('yes', lang)}
+                color='white'
+                bg={COLORS[dark ? 'dark' : 'light'].delete}
+              />
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
+    </View>
   )
 }
 // TODO.Add toggle for notification and some view for the favorite categories
@@ -229,7 +301,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingLeft: 15,
-    backgroundColor: '#cc2932',
+    // backgroundColor: '#8B0000', //dark
+    backgroundColor: '#DC143C', //light
     height: 70,
   },
   swipedStyle: {

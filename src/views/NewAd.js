@@ -1,4 +1,4 @@
-import { useTheme } from '@react-navigation/native'
+import { useNavigation, useTheme } from '@react-navigation/native'
 import {
   Alert,
   Button,
@@ -31,6 +31,7 @@ import translate from '@lang/translate'
 import { handleRoutetitle } from '@constants/common'
 
 function NewAd() {
+  const { navigate } = useNavigation()
   const lang = useStore((state) => state.lang)
   const queryClient = useQueryClient()
   const { colors, dark } = useTheme()
@@ -99,18 +100,20 @@ function NewAd() {
       },
       onUploadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent
-        const axiosProgress = Math.round((loaded * 100) / total)
+        const axiosProgress = loaded / total
         setProgress(axiosProgress)
       },
     })
       .then(function (response) {
         console.log('response :', response)
         queryClient.invalidateQueries('my-ads')
+        queryClient.invalidateQueries('home-page-ads')
+        navigate(ROUTES.HOME)
 
         setModalVisible(false)
         resetAll()
         // TODO.on success redirect to home and invalidate the homequery
-        Alert.alert('Your Ad is live!')
+        // Alert.alert('Your Ad is live!')
       })
       .catch(function (error) {
         setModalVisible(false)
@@ -515,7 +518,7 @@ function NewAd() {
               theme={dark ? 'DARK' : 'LIGHT'}
               {...field}
               ref={null}
-              placeholder='Select an option'
+              placeholder={translate('option.placeholder', lang)}
               closeOnBackPressed
               style={{
                 marginBottom: 10,
@@ -775,7 +778,7 @@ function NewAd() {
       <Progressoverlay
         progress={progress}
         visible={modalVisible}
-        title='Your files are being uploaded ...'
+        title={translate('upload.message', lang)}
       />
     </ScrollView>
   )

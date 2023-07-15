@@ -27,17 +27,20 @@ function Preview(item) {
   }
   // console.log(`${API_BASE_URL}/files/${attachment?.[0]?.path}`)
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, item.small && { margin: 8 }]}>
       <View style={[styles.container, styles[colorScheme]]}>
         <Pressable
           onPress={() => {
             navigation.navigate(ROUTES.HOME_AD, { id: item.id })
           }}
+          style={({ pressed }) => pressed && { opacity: 0.5 }}
         >
           {imageUrl ? (
             <Image
               style={styles.image}
-              source={{ uri: `${API_BASE_URL}/files/${imageUrl}` }}
+              source={{
+                uri: `${API_BASE_URL}/files/${imageUrl}`,
+              }}
             />
           ) : (
             <Image

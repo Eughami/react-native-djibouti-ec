@@ -26,7 +26,7 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: true,
+    shouldSetBadge: false,
   }),
 })
 
@@ -76,9 +76,6 @@ export default function App() {
   const responseListener = useRef()
 
   useEffect(() => {
-    const lang = getLocales()[0].languageCode
-    updateLang(lang)
-    setLang(lang)
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         // INFO. This is when notification is received
@@ -99,10 +96,17 @@ export default function App() {
       const log = {}
       let deviceId = await AsyncStorage.getItem('deviceId')
       let theme = await AsyncStorage.getItem('theme')
+      let lang = await AsyncStorage.getItem('lang')
+      console.log({ lang })
       try {
         log['initialStorage'] = performance.now() - st
         log['tt'] = performance.now()
 
+        // ? If no language is set just use the local + update the device.lang in BE
+        if (!lang) {
+          lang = getLocales()[0].languageCode
+          updateLang(lang)
+        }
         // Fetch deviceInfo,pushToken and save in BE to get an ID
         if (!deviceId) {
           const token = await registerForPushNotificationsAsync(lang)
@@ -122,9 +126,9 @@ export default function App() {
           theme = Appearance.getColorScheme()
           log['theme'] = performance.now() - log['tt']
         }
-        console.log(deviceId)
         setDeviceId(deviceId)
         swithTheme(theme)
+        setLang(lang)
         delete log['tt']
         log['total'] = performance.now() - st
       } catch (error) {

@@ -195,6 +195,7 @@ function Search({ navigation }) {
             <Text
               style={{
                 flex: 1,
+                padding: 10,
                 fontWeight: 'bold',
                 fontSize: 14,
                 color: colors.text,
@@ -203,7 +204,7 @@ function Search({ navigation }) {
               {translate('popular.ads', lang)}
             </Text>
           }
-          style={{ flex: 1, padding: 10 }}
+          style={{ flex: 1 }}
           data={topAds.data.sort((a, b) => b.count - a.count)}
           renderItem={(itemData) => <Preview {...itemData.item} small />}
           keyExtractor={(item) => item.id}
