@@ -26,7 +26,7 @@
     },
     "android": {
       "package": "com.eughami.djiboutiec",
-      "versionCode": 1,
+      "versionCode": 1.001,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -42,6 +42,17 @@
       }
     },
     "owner": "eughami",
-    "plugins": ["expo-localization"]
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31
+          }
+        }
+      ]
+    ]
   }
 }
