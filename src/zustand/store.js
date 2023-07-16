@@ -11,6 +11,8 @@ export const useStore = create((set) => ({
   setFavCat: (favCat) => set((state) => ({ favCat })),
   lang: 'en',
   setLang: (lang) => set((state) => ({ lang })),
+  notisOn: true,
+  setNotisOn: (notisOn) => set((state) => ({ notisOn })),
   filters: {
     keyword: '',
     adType: true,

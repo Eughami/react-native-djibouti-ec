@@ -40,6 +40,7 @@ function Title({ text }) {
 function HomePage() {
   const { colors } = useTheme()
   const setFavCat = useStore((state) => state.setFavCat)
+  const setNotisOn = useStore((state) => state.setNotisOn)
   const lang = useStore((state) => state.lang)
 
   const {
@@ -50,7 +51,10 @@ function HomePage() {
   } = useQuery('home-page-ads', () => homePageAds(), {})
 
   const {} = useQuery('fav-cat', () => getFav(), {
-    onSuccess: (data) => setFavCat(data?.favoriteCategories ?? []),
+    onSuccess: (data) => {
+      setNotisOn(data?.sendNotification ?? true)
+      setFavCat(data?.favoriteCategories ?? [])
+    },
   })
 
   // TODO.Screen focus refetch worth it ??

@@ -25,7 +25,7 @@ function CustomButton({
           borderWidth: 1,
         },
         isSelected && {
-          backgroundColor: bg ?? COLORS[dark ? 'dark' : 'light'].dominant,
+          backgroundColor: bg ?? COLORS[dark ? 'dark' : 'light'].secondary,
           borderWidth: 0,
         },
         pressed && { opacity: 0.7 },

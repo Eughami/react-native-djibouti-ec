@@ -75,3 +75,18 @@ export const updateFav = async (category) => {
       errorLog({ ...err, msg: 'Error while updating favorite' }, deviceId)
     })
 }
+
+
+export const updateDevice = async (value) => {
+  const deviceId = await AsyncStorage.getItem('deviceId')
+  if (!deviceId) return
+  return axiosInstance({
+    method: 'patch',
+    url: `/devices/${deviceId}`,
+    data: { sendNotification:value },
+  })
+    .then((res) => res)
+    .catch((err) => {
+      errorLog({ ...err, msg: 'Error while updating device' }, deviceId)
+    })
+}

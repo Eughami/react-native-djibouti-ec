@@ -3,8 +3,8 @@ import Loader from '@components/Loader'
 import { ROUTES } from '@constants/routes'
 import { useNavigation, useTheme } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { deleteAd, getMyAds } from '@services/home'
-import React, { useEffect, useState } from 'react'
+import { deleteAd, getMyAds, updateDevice } from '@services/home'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -15,10 +15,11 @@ import {
   Image,
   Modal,
   Pressable,
+  Switch,
 } from 'react-native'
 
 import { SwipeListView } from 'react-native-swipe-list-view'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import Ad from './Ad'
 import { API_BASE_URL } from '@constants/api'
 import { COLORS } from '@constants/style'
@@ -29,6 +30,10 @@ import { handleRoutetitle, whichTextToShow } from '@constants/common'
 import CustomButton from '@components/CustomButton'
 
 function MyProfile() {
+  const notisOn = useStore((state) => state.notisOn)
+  const debounceTimeoutRef = useRef(null)
+  const queryClient = useQueryClient()
+  const [enabled, setEnaled] = useState(notisOn)
   const [isOpen, setIsOpen] = useState(false)
   const [delId, setDelId] = useState(null)
   const { dark, colors } = useTheme()
@@ -67,6 +72,32 @@ function MyProfile() {
       },
     },
   )
+
+  const { mutate: updateMutation, isLoading: mutationLoading } = useMutation(
+    updateDevice,
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('fav-cat')
+      },
+    },
+  )
+
+  const debounceUpdate = () => {
+    if (mutationLoading) {
+      return // Ignore button press if a request is already pending
+    }
+
+    // Clear the previous timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+
+    // Set a new timeout of 1 second
+    debounceTimeoutRef.current = setTimeout(() => {
+      updateMutation(enabled)
+    }, 3000)
+    setEnaled(!enabled)
+  }
 
   const deleteRow = (rowMap, rowKey) => {
     closeRow(rowMap, rowKey)
@@ -140,11 +171,18 @@ function MyProfile() {
         },
       ]}
     >
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginRight: 5,
+      <Pressable
+        style={({ pressed }) => [
+          {
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: 5,
+          },
+          pressed && { opacity: 0.7 },
+        ]}
+        onPress={() => {
+          setDelId(data.item.id)
+          toggleFunc()
         }}
       >
         <IconButton
@@ -160,7 +198,7 @@ function MyProfile() {
         <Text style={{ fontSize: 10, color: 'white', fontWeight: 'bold' }}>
           {translate('delete', lang)}
         </Text>
-      </View>
+      </Pressable>
     </View>
   )
 
@@ -168,12 +206,33 @@ function MyProfile() {
   if (loading) return <Loader />
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, padding: 10, backgroundColor: colors.card }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 10,
+        }}
+      >
+        <Text style={{ fontWeight: 'bold', color: colors.text, fontSize: 16 }}>
+          {translate('categories.updates', lang)}
+        </Text>
+        <Switch onValueChange={debounceUpdate} value={enabled} />
+      </View>
+      <Text
+        style={[
+          styles.subtitle,
+          {
+            color: colors.text,
+          },
+        ]}
+      >
+        {translate('routes.MyAds', lang)}
+      </Text>
       <SwipeListView
         style={{
           flex: 1,
-          padding: 10,
-          backgroundColor: colors.card,
         }}
         data={ads?.data}
         keyExtractor={(item) => item.id}
@@ -288,6 +347,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
+  },
+  subtitle: {
+    paddingVertical: 10,
+    fontWeight: 'bold',
+    fontSize: 18,
   },
   emptyText: {
     marginTop: 30,
