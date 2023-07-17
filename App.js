@@ -18,6 +18,12 @@ import axiosInstance from '@constants/axiosInstance'
 import { errorLog, postLogs, updateLang } from '@services/log'
 import { getLocales } from 'expo-localization'
 import translate from '@lang/translate'
+import { ROUTES } from '@constants/routes'
+import { NotificationTypeEnum } from '@constants/categories'
+import * as Linking from 'expo-linking'
+import { dd, deepLinkingCategories } from '@constants/common'
+
+const prefix = Linking.createURL('/')
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
@@ -192,6 +198,91 @@ export default function App() {
             }
 
             _routeNameRef.current = currentRouteName
+          }}
+          linking={{
+            prefixes: [prefix, 'eughami://'],
+            config: {
+              screens: {
+                [ROUTES.BOTTOM_TAB_ROUTES]: {
+                  path: ROUTES.BOTTOM_TAB_ROUTES,
+                  screens: {
+                    [ROUTES.HOME_STACK]: {
+                      path: ROUTES.HOME_STACK,
+                      initialRouteName: ROUTES.HOME,
+                      screens: { ...deepLinkingCategories() },
+                    },
+                    [ROUTES.SEARCH_STACK]: {
+                      path: ROUTES.SEARCH_STACK,
+                      initialRouteName: ROUTES.SEARCH,
+                      screens: {
+                        Search: 'Search',
+                        [ROUTES.HOME_AD]: {
+                          path: 'Home.Ad/:id',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            async getInitialURL() {
+              // TODO.Fix the notifications
+              // First, you may want to do the default deep link handling
+              // Check if app was opened from a deep link
+              const url = await Linking.getInitialURL()
+              console.log(url)
+              if (url != null) {
+                return url
+              }
+
+              // Handle URL from expo push notifications
+              const response =
+                await Notifications.getLastNotificationResponseAsync()
+
+              const data = response?.notification.request.content.data ?? null
+              console.log('INITIAL URL : ', data)
+              // if (data) return `${ROUTES.HOME_CATEGORY}.${data.category}`
+              return `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.SEARCH_STACK}/${ROUTES.HOME_AD}`
+            },
+            subscribe(listener) {
+              const onReceiveURL = ({ url }) => listener(url)
+
+              // Listen to incoming links from deep linking
+              const eventListenerSubscription = Linking.addEventListener(
+                'url',
+                onReceiveURL,
+              )
+
+              // Listen to expo push notifications
+              const subscription =
+                Notifications.addNotificationResponseReceivedListener(
+                  (response) => {
+                    let url = null
+                    const data =
+                      response?.notification.request.content.data ?? null
+
+                    // Any custom logic to see whether the URL needs to be handled
+                    //...
+                    console.log('LISTENER : ', data)
+
+                    if (data.type === NotificationTypeEnum.singleCategory)
+                      url = `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.SEARCH_STACK}/${ROUTES.HOME_AD}`
+                    // url = `eughami://${ROUTES.SEARCH}`
+
+                    console.log({ url })
+                    // Let React Navigation handle the URL
+                    // const deepLinkUrl = Linking.createURL(ROUTES.SEARCH_STACK)
+                    // Linking.openURL(deepLinkUrl)
+                    listener(url)
+                  },
+                )
+
+              return () => {
+                // Clean up the event listeners
+                eventListenerSubscription.remove()
+                subscription.remove()
+              }
+            },
           }}
         >
           <DrawerNav />

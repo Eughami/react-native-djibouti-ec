@@ -76,3 +76,17 @@ export const whichTextToShow = (ad, lang, isDescription = false) => {
   else key = isSameLanguage ? defaultKey : 'subtitle'
   return ad[key] || ad[defaultKey]
 }
+
+export const deepLinkingCategories = () => {
+  const obj = {
+    Home: ROUTES.HOME,
+    [ROUTES.HOME_AD]: {
+      path: 'Home.Ad/:id',
+    },
+  }
+  for (k of Object.keys(CategoryEnum)) {
+    const c = `${ROUTES.HOME_CATEGORY}.${k}`
+    obj[c] = { path: `${c}/:category` }
+  }
+  return obj
+}

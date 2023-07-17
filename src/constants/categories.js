@@ -51,3 +51,8 @@ export const HomeCategories = [
     name: CategoryEnum.Movie,
   },
 ]
+
+export const NotificationTypeEnum = {
+  singleCategory: 'SINGLE_CATEGORY',
+  multiCategory: 'MULTI_CATEGORY',
+}

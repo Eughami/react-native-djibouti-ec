@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Aaway",
+    "scheme": "eughami",
     "slug": "djibouti-ec",
     "version": "1.0.0",
     "orientation": "portrait",
