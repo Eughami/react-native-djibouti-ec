@@ -111,7 +111,6 @@ export default function App() {
         // ? If no language is set just use the local + update the device.lang in BE
         if (!lang) {
           lang = getLocales()[0].languageCode
-          updateLang(lang)
         }
         // Fetch deviceInfo,pushToken and save in BE to get an ID
         if (!deviceId) {
@@ -135,6 +134,7 @@ export default function App() {
         setDeviceId(deviceId)
         swithTheme(theme)
         setLang(lang)
+        updateLang(lang)
         delete log['tt']
         log['total'] = performance.now() - st
       } catch (error) {
