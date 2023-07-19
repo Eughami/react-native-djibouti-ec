@@ -17,5 +17,5 @@ web-build/
 .metro-health-check*
 
 #Credentials
-google-services.json
+# google-services.json
 expo-react-native-62ec5-cd791b5d33fc.json
