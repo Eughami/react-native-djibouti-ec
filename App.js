@@ -229,7 +229,7 @@ export default function App() {
               // TODO.Fix the notifications
               // First, you may want to do the default deep link handling
               // Check if app was opened from a deep link
-              let url = await Linking.getInitialURL()
+              const url = await Linking.getInitialURL()
               console.log(url)
               if (url != null) {
                 return url
@@ -240,12 +240,9 @@ export default function App() {
                 await Notifications.getLastNotificationResponseAsync()
 
               const data = response?.notification.request.content.data ?? null
-              if (data.type === NotificationTypeEnum.singleCategory)
-                url = `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.HOME_STACK}/${ROUTES.HOME_CATEGORY}.${data.category}/${data.category}`
-
               console.log('INITIAL URL : ', data)
               // if (data) return `${ROUTES.HOME_CATEGORY}.${data.category}`
-              return url
+              return `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.SEARCH_STACK}/${ROUTES.HOME_AD}`
             },
             subscribe(listener) {
               const onReceiveURL = ({ url }) => listener(url)
@@ -269,7 +266,7 @@ export default function App() {
                     console.log('LISTENER : ', data)
 
                     if (data.type === NotificationTypeEnum.singleCategory)
-                      url = `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.HOME_STACK}/${ROUTES.HOME_CATEGORY}.${data.category}/${data.category}`
+                      url = `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.SEARCH_STACK}/${ROUTES.HOME_AD}`
                     // url = `eughami://${ROUTES.SEARCH}`
 
                     console.log({ url })
