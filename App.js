@@ -240,7 +240,7 @@ export default function App() {
                 await Notifications.getLastNotificationResponseAsync()
 
               const data = response?.notification.request.content.data ?? null
-              if (data.type === NotificationTypeEnum.singleCategory)
+              if (data?.type === NotificationTypeEnum.singleCategory)
                 url = `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.HOME_STACK}/${ROUTES.HOME_CATEGORY}.${data.category}/${data.category}`
 
               console.log('INITIAL URL : ', data)
@@ -268,7 +268,7 @@ export default function App() {
                     //...
                     console.log('LISTENER : ', data)
 
-                    if (data.type === NotificationTypeEnum.singleCategory)
+                    if (data?.type === NotificationTypeEnum.singleCategory)
                       url = `eughami://${ROUTES.BOTTOM_TAB_ROUTES}/${ROUTES.HOME_STACK}/${ROUTES.HOME_CATEGORY}.${data.category}/${data.category}`
                     // url = `eughami://${ROUTES.SEARCH}`
 

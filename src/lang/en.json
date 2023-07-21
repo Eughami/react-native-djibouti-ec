@@ -1,5 +1,5 @@
 {
-  "categories.updates": "Categories notifications",
+  "categories.updates": "Favorite Categories notifications",
   "menu.Vehicles": "Vehicles",
   "menu.RealEstate": "Real Estate",
   "menu.jobs": "Jobs & Services",
@@ -34,6 +34,7 @@
   "min": "Min",
   "max": "Max",
   "title": "Title",
+  "test": "This Ad is not real and serves as example",
   "description": "Description",
   "category": "Category",
   "add.images": "Add images (up to 3)",

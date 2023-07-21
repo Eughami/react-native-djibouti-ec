@@ -47,8 +47,8 @@ export const HomeCategories = [
     name: CategoryEnum.Clothe,
   },
   {
-    icon: 'videocam-outline',
-    name: CategoryEnum.Movie,
+    icon: 'basketball-outline',
+    name: CategoryEnum.Sport,
   },
 ]
 

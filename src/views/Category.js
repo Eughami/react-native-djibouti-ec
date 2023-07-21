@@ -4,6 +4,7 @@ import Preview from '@components/Preview'
 import SortOptionsModal from '@components/SortOptionModal'
 import { CategoryEnum } from '@constants/categories'
 import { sortOptions } from '@constants/common'
+import { COLORS } from '@constants/style'
 import translate from '@lang/translate'
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native'
 import { adsPerCategory } from '@services/category'
@@ -146,8 +147,8 @@ function Category() {
     <View style={styles.sortContainer}>
       {Object.keys(CategoryEnum).includes(params?.category) && (
         <IconButton
-          icon={isFav ? 'notifications-outline' : 'notifications-off-outline'}
-          color={colors.text}
+          icon={isFav ? 'heart-sharp' : 'heart-outline'}
+          color={isFav ? COLORS.light.delete : colors.text}
           size={30}
           onPress={debounceFavAction}
         />
@@ -198,7 +199,9 @@ function Category() {
                   alignItems: 'center',
                 }}
               >
-                <Text style={{ color: colors.text }}>No ads yet.</Text>
+                <Text style={{ color: colors.text }}>
+                  {translate('no.ads', lang)}
+                </Text>
               </View>
             }
           />

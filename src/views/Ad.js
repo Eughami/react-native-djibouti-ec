@@ -46,6 +46,7 @@ function Ad() {
     onSuccess: (data) => adview([data.id]),
   })
   const loading = isFetching || isLoading
+  const isTest = ad?.title === 'this is a sample title for an Ad'
   if (loading) return <Loader />
   return (
     <>
@@ -104,7 +105,7 @@ function Ad() {
                 ) : (
                   <Video
                     ref={video}
-                    // isMuted
+                    isMuted
                     style={{
                       width: '100%',
                       height: '100%',
@@ -139,6 +140,23 @@ function Ad() {
             </>
           )}
         </View>
+
+        {false && (
+          <Text
+            style={[
+              styles.title,
+              {
+                backgroundColor: COLORS[dark ? 'dark' : 'light'].delete,
+                color: 'white',
+                textAlign: 'center',
+                fontSize: 18,
+                marginVertical: 10,
+              },
+            ]}
+          >
+            {translate('test', lang)}
+          </Text>
+        )}
 
         <Text style={[styles.description, { color: colors.text }]}>
           {whichTextToShow(ad, lang, true)}
@@ -183,7 +201,7 @@ function Ad() {
           icon='call-outline'
           bg='#2270af'
           color='white'
-          onPress={() => Linking.openURL(`tel:+253${ad.phone}`)}
+          onPress={() => (isTest ? {} : Linking.openURL(`tel:+253${ad.phone}`))}
         />
         <CustomButton
           width={'50%'}
@@ -192,9 +210,11 @@ function Ad() {
           bg='green'
           color='white'
           onPress={() =>
-            Linking.openURL(
-              `whatsapp://send?text=Hello i'm interested in your ad&phone=253${ad.phone}`,
-            )
+            isTest
+              ? {}
+              : Linking.openURL(
+                  `whatsapp://send?text=Hello i'm interested in your ad&phone=253${ad.phone}`,
+                )
           }
         />
       </View>
