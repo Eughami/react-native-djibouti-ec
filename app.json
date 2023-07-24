@@ -27,7 +27,7 @@
     },
     "android": {
       "package": "com.eughami.djiboutiec",
-      "versionCode": 3,
+      "versionCode": 4,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

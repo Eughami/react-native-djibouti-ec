@@ -141,7 +141,7 @@ function Ad() {
           )}
         </View>
 
-        {false && (
+        {isTest && (
           <Text
             style={[
               styles.title,
