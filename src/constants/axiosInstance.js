@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { API_BASE_URL } from './api'
+import { SC, SC_KEY } from '@env'
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 600000,
+  timeout: 60000,
 })
 
 // API Request interceptor
@@ -12,7 +13,7 @@ axiosInstance.interceptors.request.use(
     /**
      * * Add future request token here
      */
-
+    config.headers[SC_KEY] = `Bearer ${SC}`
     return config
   },
   (error) => {
